@@ -1,72 +1,62 @@
 "use client";
 
-import { projectsData } from "@/lib/data";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
+import { motion } from "framer-motion";
 
-type ProjectProps = (typeof projectsData)[number];
+export type ProjectProps = {
+  title: string;
+  description: string;
+  tags: readonly string[];
+  imageUrl: StaticImageData;
+  index: number;
+};
 
-export default function Project(
-    {
-        title,
-        description,
-        tags,
-        imageUrl,
-    }: ProjectProps) {
+export default function Project({ title, description, tags, imageUrl, index }: ProjectProps) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-dim"
+    >
+      <div className="relative aspect-16/10 overflow-hidden bg-surface-2">
+        <Image
+          src={imageUrl}
+          alt={`${title} screenshot`}
+          quality={90}
+          placeholder="blur"
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="h-full w-full object-cover object-top opacity-80 transition duration-500 group-hover:scale-[1.03] group-hover:opacity-100"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface/90 to-transparent" />
+      </div>
 
-    const ref = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        offset: ["0 1", "1.33 1"],
-    });
-    const scaleProgess = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
-    const opacityProgess = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
+      <div className="flex flex-col gap-3 p-5">
+        <h3 className="text-lg font-semibold tracking-[-0.015em]">{title}</h3>
+        <p className="text-[0.9rem] leading-relaxed text-muted">{description}</p>
+        <ul className="mt-1 flex flex-wrap gap-1.5">
+          {tags.map((tag) => (
+            <li
+              key={tag}
+              className="rounded-md border border-line bg-surface-2 px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.08em] text-dim"
+            >
+              {tag}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </motion.article>
+  );
+}
 
-    return (
-        <motion.div
-            ref={ref}
-            style={{
-                scale: scaleProgess,
-                opacity: opacityProgess,
-            }}
-            className="group mb-3 sm:mb-8 last:mb-0"
-
-        >
-            <section className="bg-gray-100 max-w-[42rem] border border-black/5 rounded-lg overflow-hidden sm:pr-8 relative sm:h-[20rem] hover:bg-gray-200 transition sm:group-even:pl-8 dark:text-white dark:bg-black/40 dark:hover:bg-white/10">
-                <div className="pt-4 pb-7 px-5 sm:pl-10 sm:pr-2 sm:pt-10 sm:max-w-[50%] flex flex-col h-full sm:group-even:ml-[18rem]">
-                    <h3 className="text-2xl font-semibold">{title}</h3>
-                    <p className="mt-2 leading-relaxed text-gray-700 dark:text-white/70">{description}</p>
-                    <ul className="flex flex-wrap mt-4 gap-2 sm:mt-auto">
-                        {tags.map((tag, index) => (
-                            <li className="bg-black/[0.8] px-3 py-1 text-[0.7rem] uppercase tracking-wider text-white rounded-full dark:text-white/70"
-                                key={index} >
-                                {tag}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-
-                <Image
-                    src={imageUrl}
-                    alt="Project I worked on"
-                    quality={95}
-                    className="absolute hidden sm:block top-8 -right-40 w-[28.25rem] rounded-t-lg shadow-2xl 
-                        transition 
-                        group-hover:scale-[1.04]
-                        group-hover:-translate-x-3
-                        group-hover:translate-y-3
-                        group-hover:-rotate-2
-
-                        group-even:group-hover:translate-x-3
-                        group-even:group-hover:translate-y-3
-                        group-even:group-hover:rotate-2    
-            
-                        group-even:right-[initial] group-even:-left-40
-                    "
-                />
-            </section>
-        </motion.div>
-    );
+export function ProjectSlot({ n }: { n: number }) {
+  return (
+    <div className="flex min-h-52 flex-col items-start justify-end rounded-2xl border border-dashed border-line p-5 text-dim">
+      <div className="label-mono">Slot {n}</div>
+      <p className="mt-2 text-[0.9rem] leading-relaxed">
+        Room for the next one. Add it in <span className="font-mono text-[0.8rem]">lib/data.ts</span>.
+      </p>
+    </div>
+  );
 }

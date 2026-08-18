@@ -1,15 +1,70 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-html {
-    --line-color: #e5e7eb;
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* Dark-committed palette. The accent is the only saturated colour in the
+     system — change --color-accent alone to reskin the whole site. */
+  --color-ink: #08090a;
+  --color-surface: #101214;
+  --color-surface-2: #16191c;
+  --color-surface-3: #1d2125;
+  --color-line: #23272b;
+  --color-line-soft: #191d20;
+  --color-text: #e9eae6;
+  --color-muted: #8a8f88;
+  --color-dim: #5a5f59;
+  --color-accent: #c6f53c;
+
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-html.dark {
-    --line-color: rgba(255, 255, 255, 0.2);
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--color-ink);
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #06070a;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
 }
 
-.borderBlack {
-    @apply border border-black/10;
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Cards track the cursor via --mx/--my, set in bento-card.tsx. */
+@utility card-spotlight {
+  position: relative;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
