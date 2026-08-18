@@ -70,10 +70,10 @@ export default function DotField() {
       const farGapPx = W < 620 ? 15 : W < 1100 ? 17 : 19;
       const dx = farGapPx / (F_FAR * kx);
       const rows = W < 620 ? 26 : 34;
-      // Generous overscan: dots travel up to ~55px under parallax plus the
-      // cursor push, so the field must extend past the viewport or sliding
-      // the sheet would expose bare edges.
-      const margin = 110;
+      // Generous overscan: near rows travel up to ~107px under parallax plus
+      // the cursor push, so the field must extend well past the viewport or
+      // swinging the sheet would expose bare edges.
+      const margin = 200;
 
       const next: Dot[] = [];
 
@@ -135,8 +135,12 @@ export default function DotField() {
       // The whole sheet drifts with the cursor, in the same direction. Per-dot
       // depth weighting below makes near rows travel further than the far
       // arc, so it reads as a surface swinging rather than a flat slide.
-      const parX = (glow.x / W - 0.5) * 2 * 30;
-      const parY = (glow.y / H - 0.5) * 2 * 20;
+      // Damped while drifting: at full strength the idle attractor would
+      // swing the sheet constantly, which is distracting on touch devices
+      // that never get a cursor.
+      const parAmp = auto ? 0.3 : 1;
+      const parX = (glow.x / W - 0.5) * 2 * 68 * parAmp;
+      const parY = (glow.y / H - 0.5) * 2 * 44 * parAmp;
 
       const R = Math.min(W, H) * 0.3;
       const R2 = R * R;
@@ -148,8 +152,9 @@ export default function DotField() {
         const q = dx * dx + dy * dy;
 
         let near = 0;
-        // Near rows (d -> 1) swing further than the distant arc.
-        const par = 0.5 + p.d * 0.8;
+        // Near rows (d -> 1) swing far more than the distant arc, which is
+        // what sells the depth — a uniform shift would just look like a pan.
+        const par = 0.32 + p.d * 1.25;
         let px = p.x + parX * par;
         let py = p.y + parY * par;
 
