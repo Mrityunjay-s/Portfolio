@@ -15,6 +15,15 @@ type Dot = {
 const ACCENT = "198,245,60";
 const BASE = "190,193,183";
 
+// Shape of the projected surface, in world space before perspective.
+//   CURVE bows the edges downward — 0 is a flat plane, higher closes it into
+//         a dome.
+//   TILT  leans the surface so one side rides higher than the other.
+//   APEX  slides the whole surface vertically without reshaping it.
+const CURVE = 0.084;
+const TILT = 0.4;
+const APEX = -0.065;
+
 export default function DotField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -47,10 +56,10 @@ export default function DotField() {
       canvas!.height = Math.round(H * dpr);
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // A curved surface seen from below. Depth z runs from near (bottom of
-      // screen) to far (the arc near the top). Screen position scales with
-      // 1/z, so rows bunch toward the horizon on their own; the quadratic
-      // term on x lifts the surface at its edges, which projects as the dome.
+      // A surface seen from below. Depth z runs from near (bottom of screen)
+      // to far (the horizon near the top). Screen position scales with 1/z,
+      // so rows bunch toward the horizon on their own; CURVE and TILT then
+      // shape the surface itself. See the constants at the top of the file.
       const Z_NEAR = 1.0;
       const Z_FAR = 2.6;
       const F_FAR = 1 / Z_FAR;
@@ -58,8 +67,7 @@ export default function DotField() {
 
       const kx = W * 0.9;
       const ky = H * 1.512;
-      const horizon = -H * 0.462;
-      const curve = 0.207;
+      const horizon = -H * 0.462 - H * APEX;
 
       // Derive the world-space column step from how far apart the tightest
       // (far) row should read on screen, so density holds across viewports.
@@ -85,7 +93,7 @@ export default function DotField() {
         for (let i = -iMax; i <= iMax; i++) {
           const x = i * dx;
           const sx = W / 2 + x * f * kx;
-          const sy = horizon + (1 + curve * x * x) * f * ky;
+          const sy = horizon + (1 + CURVE * x * x + TILT * x) * f * ky;
 
           if (sy > H + margin || sy < -margin) continue;
 
