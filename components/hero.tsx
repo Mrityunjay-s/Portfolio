@@ -33,7 +33,7 @@ export default function Hero() {
 
       <div className="pointer-events-none relative z-10 mx-auto w-full max-w-350 px-5 pb-16 pt-32 sm:px-10">
         <motion.p
-          className="label-mono mb-5 text-dim"
+          className="label-mono mb-5 text-amber-100"
           variants={rise}
           initial="initial"
           animate="animate"
@@ -53,7 +53,7 @@ export default function Hero() {
           <span className="block text-muted">between the tap</span>
           <span className="block">
             and the answer
-            <span className="ml-[0.06em] inline-block h-[0.135em] w-[0.135em] rounded-full bg-accent align-baseline shadow-[0_0_28px_rgba(198,245,60,0.55)]" />
+            <span className="ml-[0.06em] inline-block h-[0.135em] w-[0.135em] rounded-full bg-accent align-baseline shadow-[0_0_28px_rgba(var(--accent-rgb),0.55)]" />
           </span>
         </motion.h1>
 

@@ -12,8 +12,18 @@ type Dot = {
   ph: number;
 };
 
-const ACCENT = "198,245,60";
 const BASE = "190,193,183";
+
+// Canvas cannot use CSS tokens directly, so read the accent triple off the
+// document. Keeps the field in step with --accent-rgb instead of duplicating
+// the colour here and letting the two drift apart.
+function readAccent() {
+  if (typeof window === "undefined") return "198,245,60";
+  const v = getComputedStyle(document.documentElement)
+    .getPropertyValue("--accent-rgb")
+    .trim();
+  return v || "198,245,60";
+}
 
 // Shape of the projected surface, in world space before perspective.
 //   CURVE bows the edges downward — 0 is a flat plane, higher closes it into
@@ -22,7 +32,7 @@ const BASE = "190,193,183";
 //   APEX  slides the whole surface vertically without reshaping it.
 const CURVE = 0.084;
 const TILT = 0.4;
-const APEX = -0.065;
+const APEX = -0.15;
 
 export default function DotField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -35,6 +45,7 @@ export default function DotField() {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasHover = window.matchMedia("(hover: hover)").matches;
+    const ACCENT = readAccent();
 
     let W = 0;
     let H = 0;

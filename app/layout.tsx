@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 export const metadata: Metadata = {
-  title: "Mrityunjay Singh | Mobile App Developer",
+  title: "Mrityunjay Singh | Dev",
   description:
     "Mobile developer building apps end to end — React Native and Kotlin on the surface, Java Spring Boot behind it.",
 };

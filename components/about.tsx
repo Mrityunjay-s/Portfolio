@@ -17,10 +17,16 @@ const IMPACT = [
   { value: "70%", label: "Less doc search time", detail: "RAG over 10,000+ documents" },
 ];
 
+// Curated from the resume rather than copied wholesale — listing every
+// framework and tool stops communicating. Kept to what signals range
+// (languages), depth (backend, AI) and the parts a reader would otherwise
+// wonder about (databases).
 const STACK = [
-  { area: "Backend", items: "Java · Spring Boot · FastAPI · Kafka · gRPC" },
-  { area: "Mobile", items: "React Native · Kotlin · Swift" },
-  { area: "AI", items: "Azure AI Foundry · RAG · Spring AI" },
+  { area: "Languages", items: "Java · Kotlin · Go · Python · TypeScript · SQL" },
+  { area: "Backend", items: "Spring Boot · FastAPI · Microservices · REST · GraphQL · gRPC" },
+  { area: "Mobile", items: "React Native · Android (Kotlin) · iOS (Swift)" },
+  { area: "AI", items: "Azure AI Foundry · Azure OpenAI · RAG · AI agents · Spring AI" },
+  { area: "Data", items: "PostgreSQL · MongoDB · Redis · Kafka · Elasticsearch" },
   { area: "Cloud", items: "Azure · Docker · Kubernetes · CI/CD" },
 ];
 
@@ -119,19 +125,19 @@ export default function About() {
         </BentoCard>
 
         <BentoCard className="min-h-44 sm:col-span-2 lg:col-span-2" label="Education">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             <div>
-              <div className="text-[0.88rem] font-medium text-text">B.Tech, Computer Science</div>
-              <div className="mt-0.5 text-[0.8rem] leading-snug text-dim">
+              <div className="text-[0.88rem] font-medium text-text">Bachelors - Computer Science</div>
+              {/* <div className="mt-0.5 text-[0.8rem] leading-snug text-dim">
                 Priyadarshini J L College of Engineering, Nagpur
-              </div>
+              </div> */}
               <div className="label-mono mt-1.5 text-dim">2021 — 2024</div>
             </div>
             <div>
-              <div className="text-[0.88rem] font-medium text-text">Diploma, Computer Technology</div>
-              <div className="mt-0.5 text-[0.8rem] leading-snug text-dim">
+              <div className="text-[0.88rem] font-medium text-text">Diploma -Computer Technology</div>
+              {/* <div className="mt-0.5 text-[0.8rem] leading-snug text-dim">
                 Priyadarshini Polytechnic, Nagpur
-              </div>
+              </div> */}
               <div className="label-mono mt-1.5 text-dim">2019 — 2021</div>
             </div>
           </div>

@@ -14,7 +14,11 @@
   --color-text: #e9eae6;
   --color-muted: #8a8f88;
   --color-dim: #5a5f59;
-  --color-accent: #c6f53c;
+  /* Single source of truth for the accent. Change both lines together — the
+     triple is what rgba() overlays and the canvas dot field read, since
+     neither can derive channels from a hex value. */
+  --color-accent: #4c9ef5;
+  --accent-rgb: 76, 158, 245;
 
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
