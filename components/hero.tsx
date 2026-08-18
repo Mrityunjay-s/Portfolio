@@ -77,7 +77,7 @@ export default function Hero() {
           </Link>
 
           <a
-            href="/Mrityunjay's Resume.pdf"
+            href="/Mrityunjay_Resume.pdf"
             download
             className="group flex items-center gap-2 rounded-full border border-line bg-surface px-6 py-3 text-sm font-medium text-text transition hover:border-dim hover:bg-surface-2 active:scale-[0.98]"
           >

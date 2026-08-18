@@ -8,30 +8,46 @@ import BentoCard from "./bento-card";
 import SectionHeading from "./section-heading";
 import { useSectionInView } from "@/lib/hooks";
 
-const CORE = ["Kotlin", "React Native", "Spring Boot", "Jetpack Compose", "TypeScript", "Firebase"];
+// Quantified outcomes carry more weight with recruiters and clients than any
+// adjective, so they get their own row rather than being buried in prose.
+const IMPACT = [
+  { value: "24%", label: "Faster API responses", detail: "Spring Security, JWT, RBAC" },
+  { value: "72%", label: "Higher throughput", detail: "SQL tuning + Redis caching" },
+  { value: "1,000+", label: "Active users", detail: "2 cross-platform apps shipped" },
+  { value: "70%", label: "Less doc search time", detail: "RAG over 10,000+ documents" },
+];
+
+const STACK = [
+  { area: "Backend", items: "Java · Spring Boot · FastAPI · Kafka · gRPC" },
+  { area: "Mobile", items: "React Native · Kotlin · Swift" },
+  { area: "AI", items: "Azure AI Foundry · RAG · Spring AI" },
+  { area: "Cloud", items: "Azure · Docker · Kubernetes · CI/CD" },
+];
 
 export default function About() {
   const { ref } = useSectionInView("About", 0.25);
 
   return (
     <section ref={ref} id="about" className="mx-auto w-full max-w-350 scroll-mt-28 px-5 py-24 sm:px-10">
-      <SectionHeading eyebrow="01 / About">One year, end to end</SectionHeading>
+      <SectionHeading eyebrow="01 / About">Client call to production</SectionHeading>
 
       <motion.div
         className="grid grid-cols-1 gap-3 sm:grid-cols-4 lg:grid-cols-6"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: true, amount: 0.15 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
         <BentoCard className="min-h-56 sm:col-span-2 lg:col-span-4" label="About">
           <p className="text-[0.94rem] leading-relaxed text-muted">
-            I&apos;m a mobile developer with a year of experience shipping apps end to end &mdash;
-            <span className="text-text"> React Native</span> and
-            <span className="text-text"> Android native with Kotlin and Jetpack Compose</span> on the
-            surface,
-            <span className="text-text"> Java Spring Boot</span> behind it. That means I can take a
-            feature from an empty screen to a deployed API without handing it off.
+            I&apos;m a full stack engineer with{" "}
+            <span className="text-text">two years</span> building secure microservices and REST
+            APIs in <span className="text-text">Java Spring Boot</span>, cross-platform apps in{" "}
+            <span className="text-text">React Native</span> with native Android and iOS modules,
+            and more recently{" "}
+            <span className="text-text">AI agents and RAG pipelines</span> on Azure AI Foundry.
+            I own the whole cycle — sitting in the requirements call, then shipping it to
+            production and keeping it running.
           </p>
         </BentoCard>
 
@@ -46,43 +62,78 @@ export default function About() {
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
           <div className="relative mt-auto p-5">
-            <div className="label-mono text-dim">Bengaluru</div>
+            <div className="label-mono text-dim">Bengaluru, India</div>
             <div className="mt-1 text-[0.95rem] font-medium">Mrityunjay Singh</div>
           </div>
         </BentoCard>
 
-        <BentoCard className="min-h-40 sm:col-span-2 lg:col-span-2" label="Core stack">
-          <ul className="flex flex-wrap gap-1.5">
-            {CORE.map((s) => (
-              <li
-                key={s}
-                className="rounded-md border border-line bg-surface-2 px-2.5 py-1 font-mono text-[0.68rem] tracking-wide text-muted"
-              >
-                {s}
+        {/* <BentoCard className="min-h-40 sm:col-span-2 lg:col-span-2" label="Currently">
+          <div>
+            <div className="text-[0.95rem] font-medium text-text">Full Stack Engineer</div>
+            <div className="mt-1.5 text-[0.86rem] leading-relaxed text-muted">
+              Web Synergies India
+              <span className="text-dim"> — a Yokogawa company</span>
+            </div>
+            <div className="label-mono mt-3 text-accent">Aug 2024 — Present</div>
+          </div>
+        </BentoCard> */}
+
+        <BentoCard
+          className="min-h-40 sm:col-span-2 lg:col-span-2"
+          label="Résumé"
+          href="/Mrityunjay_Resume.pdf"
+          download
+        >
+          <p className="text-[0.94rem] leading-relaxed text-muted">
+            Full history, skills and metrics — one page, as a PDF.
+          </p>
+        </BentoCard>
+
+        <BentoCard className="sm:col-span-4 lg:col-span-6" label="Selected impact">
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-6 lg:grid-cols-4">
+            {IMPACT.map((s) => (
+              <div key={s.label}>
+                <dt className="font-mono text-[1.9rem] leading-none font-medium tabular-nums text-accent">
+                  {s.value}
+                </dt>
+                <dd className="mt-2">
+                  <span className="block text-[0.86rem] font-medium text-text">{s.label}</span>
+                  <span className="mt-0.5 block text-[0.78rem] leading-snug text-dim">
+                    {s.detail}
+                  </span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </BentoCard>
+
+        <BentoCard className="min-h-44 sm:col-span-2 lg:col-span-4" label="Stack">
+          <ul className="flex flex-col gap-2.5">
+            {STACK.map((row) => (
+              <li key={row.area} className="flex flex-col gap-0.5 sm:flex-row sm:gap-4">
+                <span className="label-mono w-20 shrink-0 pt-0.5 text-dim">{row.area}</span>
+                <span className="text-[0.86rem] leading-relaxed text-muted">{row.items}</span>
               </li>
             ))}
           </ul>
         </BentoCard>
 
-        <BentoCard
-          className="min-h-40 sm:col-span-1 lg:col-span-1"
-          label="Résumé"
-          href="/Mrityunjay's Resume.pdf"
-          download
-        >
-          <p className="text-[0.94rem] leading-relaxed text-muted">
-            The one-page version, as a PDF.
-          </p>
-        </BentoCard>
-
-        <BentoCard className="min-h-40 sm:col-span-1 lg:col-span-1">
-          <div>
-            <div className="font-mono text-3xl font-medium tabular-nums text-accent">1</div>
-            <div className="label-mono mt-1 text-dim">Year shipping</div>
-          </div>
-          <div>
-            <div className="font-mono text-3xl font-medium tabular-nums text-text">2</div>
-            <div className="label-mono mt-1 text-dim">Apps live</div>
+        <BentoCard className="min-h-44 sm:col-span-2 lg:col-span-2" label="Education">
+          <div className="flex flex-col gap-4">
+            <div>
+              <div className="text-[0.88rem] font-medium text-text">B.Tech, Computer Science</div>
+              <div className="mt-0.5 text-[0.8rem] leading-snug text-dim">
+                Priyadarshini J L College of Engineering, Nagpur
+              </div>
+              <div className="label-mono mt-1.5 text-dim">2021 — 2024</div>
+            </div>
+            <div>
+              <div className="text-[0.88rem] font-medium text-text">Diploma, Computer Technology</div>
+              <div className="mt-0.5 text-[0.8rem] leading-snug text-dim">
+                Priyadarshini Polytechnic, Nagpur
+              </div>
+              <div className="label-mono mt-1.5 text-dim">2019 — 2021</div>
+            </div>
           </div>
         </BentoCard>
       </motion.div>

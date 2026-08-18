@@ -70,13 +70,15 @@ export default function BentoCard({
 
   if (!href) return body;
 
+  // The anchor becomes the grid item, so it has to carry the caller's layout
+  // classes too — otherwise every linked card collapses to a single column.
   return (
     <a
       href={href}
       download={download}
       target={external ? "_blank" : undefined}
       rel={external ? "noreferrer" : undefined}
-      className="block h-full rounded-2xl"
+      className={clsx("block h-full rounded-2xl", className)}
     >
       {body}
     </a>
