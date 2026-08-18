@@ -69,15 +69,27 @@ export default function DotField() {
       const ky = H * 1.512;
       const horizon = -H * 0.462 - H * APEX;
 
-      // Derive the world-space column step from how far apart the tightest
-      // (far) row should read on screen, so density holds across viewports.
-      const farGapPx = W < 620 ? 15 : W < 1100 ? 17 : 19;
+      // CURVE and TILT are shaped against width, not height. Scaling them by
+      // ky would tie the on-screen angle to the viewport's aspect ratio: the
+      // tilt drop is TILT * 1.112 * scale, so an H-based scale makes a tall
+      // phone roughly four times steeper than a wide laptop. A W-based scale
+      // keeps the slope identical everywhere. The 0.85 factor is picked so a
+      // ~16:9.5 laptop matches the previous height-based value.
+      const kShape = W * 0.85;
+
+      // Column step comes from how far apart the tightest (far) row should
+      // read on screen. Scaled with width so the grid stays proportionally as
+      // fine on a phone as on a laptop — a flat 15px gap is ~4% of a 375px
+      // screen but ~1% of a 1728px one, which reads far coarser. Clamped so
+      // dots never merge on small screens or scatter on large ones.
+      const farGapPx = Math.max(10, Math.min(19, W * 0.014));
       const dx = farGapPx / (F_FAR * kx);
-      const rows = W < 620 ? 26 : 34;
-      // Generous overscan: near rows travel up to ~107px under parallax, so
-      // the field must extend well past the viewport or swinging the sheet
-      // would expose bare edges.
-      const margin = 200;
+      const rows = W < 620 ? 30 : 34;
+      // Overscan covers the ~107px of parallax travel, and scales with width
+      // so the generated x-range stays aspect-independent — a fixed margin is
+      // a far larger share of a phone's width than a laptop's, which would
+      // stretch the field differently on each.
+      const margin = Math.max(130, W * 0.12);
 
       const next: Dot[] = [];
 
@@ -93,7 +105,7 @@ export default function DotField() {
         for (let i = -iMax; i <= iMax; i++) {
           const x = i * dx;
           const sx = W / 2 + x * f * kx;
-          const sy = horizon + (1 + CURVE * x * x + TILT * x) * f * ky;
+          const sy = horizon + f * (ky + kShape * (CURVE * x * x + TILT * x));
 
           if (sy > H + margin || sy < -margin) continue;
 

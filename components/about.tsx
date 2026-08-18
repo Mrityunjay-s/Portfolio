@@ -67,7 +67,7 @@ export default function About() {
           </div>
         </BentoCard>
 
-        {/* <BentoCard className="min-h-40 sm:col-span-2 lg:col-span-2" label="Currently">
+        <BentoCard className="min-h-40 sm:col-span-2 lg:col-span-2" label="Currently">
           <div>
             <div className="text-[0.95rem] font-medium text-text">Full Stack Engineer</div>
             <div className="mt-1.5 text-[0.86rem] leading-relaxed text-muted">
@@ -76,7 +76,7 @@ export default function About() {
             </div>
             <div className="label-mono mt-3 text-accent">Aug 2024 — Present</div>
           </div>
-        </BentoCard> */}
+        </BentoCard>
 
         <BentoCard
           className="min-h-40 sm:col-span-2 lg:col-span-2"
