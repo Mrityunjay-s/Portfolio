@@ -25,6 +25,11 @@ export default function DotField() {
     if (!ctx) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasHover = window.matchMedia("(hover: hover)").matches;
+
+    // How far a dot is pushed out of the cursor's way, at the centre of the
+    // field of influence.
+    const PUSH = 16;
 
     let W = 0;
     let H = 0;
@@ -65,7 +70,10 @@ export default function DotField() {
       const farGapPx = W < 620 ? 15 : W < 1100 ? 17 : 19;
       const dx = farGapPx / (F_FAR * kx);
       const rows = W < 620 ? 26 : 34;
-      const margin = 40;
+      // Generous overscan: dots travel up to ~55px under parallax plus the
+      // cursor push, so the field must extend past the viewport or sliding
+      // the sheet would expose bare edges.
+      const margin = 110;
 
       const next: Dot[] = [];
 
@@ -108,16 +116,27 @@ export default function DotField() {
       const time = (now - t0) / 1000;
       ctx!.clearRect(0, 0, W, H);
 
-      // With no cursor (touch, or an idle desktop) drift an attractor so the
-      // field still reads as interactive.
-      const auto = (!pointer.active || idle > 2.2) && !reduce;
+      // Drift an attractor only when there is no cursor to follow: before the
+      // first move, after the pointer leaves the window, or on touch devices
+      // once a drag has gone idle. A mouse that is simply held still keeps
+      // the glow exactly where the user left it.
+      const idleLimit = hasHover ? Infinity : 3;
+      const auto = (!pointer.active || idle > idleLimit) && !reduce;
       const ax = auto ? W * (0.5 + Math.cos(time * 0.42) * 0.29) : pointer.x;
       const ay = auto ? H * (0.52 + Math.sin(time * 0.31) * 0.24) : pointer.y;
       const lit = pointer.active || auto;
 
-      glow.x += (ax - glow.x) * 0.09;
-      glow.y += (ay - glow.y) * 0.09;
-      glow.on += ((lit ? 1 : 0) - glow.on) * 0.08;
+      // Track quickly when following a real cursor; ease when drifting.
+      const chase = auto ? 0.09 : 0.24;
+      glow.x += (ax - glow.x) * chase;
+      glow.y += (ay - glow.y) * chase;
+      glow.on += ((lit ? 1 : 0) - glow.on) * 0.12;
+
+      // The whole sheet drifts with the cursor, in the same direction. Per-dot
+      // depth weighting below makes near rows travel further than the far
+      // arc, so it reads as a surface swinging rather than a flat slide.
+      const parX = (glow.x / W - 0.5) * 2 * 30;
+      const parY = (glow.y / H - 0.5) * 2 * 20;
 
       const R = Math.min(W, H) * 0.3;
       const R2 = R * R;
@@ -129,9 +148,23 @@ export default function DotField() {
         const q = dx * dx + dy * dy;
 
         let near = 0;
+        // Near rows (d -> 1) swing further than the distant arc.
+        const par = 0.5 + p.d * 0.8;
+        let px = p.x + parX * par;
+        let py = p.y + parY * par;
+
         if (q < R2) {
-          const t = 1 - Math.sqrt(q) / R;
+          const dist = Math.sqrt(q);
+          const t = 1 - dist / R;
           near = t * t * glow.on;
+
+          // Push the dot directly away from the cursor, easing off with
+          // distance, so the field visibly parts around the pointer.
+          if (dist > 0.001 && !reduce) {
+            const shove = (t * t * PUSH * glow.on) / dist;
+            px += dx * shove;
+            py += dy * shove;
+          }
         }
 
         const twinkle = reduce ? 0 : Math.sin(time * 0.8 + p.ph) * 0.5 + 0.5;
@@ -142,18 +175,18 @@ export default function DotField() {
           const g = Math.min(1, near * 1.5);
           ctx!.fillStyle = `rgba(${ACCENT},${(alpha * g).toFixed(3)})`;
           ctx!.beginPath();
-          ctx!.arc(p.x, p.y, rad, 0, 6.2832);
+          ctx!.arc(px, py, rad, 0, 6.2832);
           ctx!.fill();
           if (g < 1) {
             ctx!.fillStyle = `rgba(${BASE},${(alpha * (1 - g) * 0.9).toFixed(3)})`;
             ctx!.beginPath();
-            ctx!.arc(p.x, p.y, rad * 0.9, 0, 6.2832);
+            ctx!.arc(px, py, rad * 0.9, 0, 6.2832);
             ctx!.fill();
           }
         } else {
           ctx!.fillStyle = `rgba(${BASE},${alpha.toFixed(3)})`;
           ctx!.beginPath();
-          ctx!.arc(p.x, p.y, rad, 0, 6.2832);
+          ctx!.arc(px, py, rad, 0, 6.2832);
           ctx!.fill();
         }
       }
