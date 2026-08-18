@@ -3,39 +3,68 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
-  --background-image-gradient-conic: conic-gradient(
-    from 180deg at 50% 50%,
-    var(--tw-gradient-stops)
-  );
+  /* Dark-committed palette. The accent is the only saturated colour in the
+     system — change --color-accent alone to reskin the whole site. */
+  --color-ink: #08090a;
+  --color-surface: #101214;
+  --color-surface-2: #16191c;
+  --color-surface-3: #1d2125;
+  --color-line: #23272b;
+  --color-line-soft: #191d20;
+  --color-text: #e9eae6;
+  --color-muted: #8a8f88;
+  --color-dim: #5a5f59;
+  --color-accent: #c6f53c;
+
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--color-ink);
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #06070a;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
   }
 }
 
-html {
-    --line-color: #e5e7eb;
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
-html.dark {
-    --line-color: rgba(255, 255, 255, 0.2);
+/* Cards track the cursor via --mx/--my, set in bento-card.tsx. */
+@utility card-spotlight {
+  position: relative;
+  overflow: hidden;
 }
 
-.borderBlack {
-    @apply border border-black/10;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
