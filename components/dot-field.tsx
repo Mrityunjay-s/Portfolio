@@ -27,10 +27,6 @@ export default function DotField() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasHover = window.matchMedia("(hover: hover)").matches;
 
-    // How far a dot is pushed out of the cursor's way, at the centre of the
-    // field of influence.
-    const PUSH = 16;
-
     let W = 0;
     let H = 0;
     let dots: Dot[] = [];
@@ -70,9 +66,9 @@ export default function DotField() {
       const farGapPx = W < 620 ? 15 : W < 1100 ? 17 : 19;
       const dx = farGapPx / (F_FAR * kx);
       const rows = W < 620 ? 26 : 34;
-      // Generous overscan: near rows travel up to ~107px under parallax plus
-      // the cursor push, so the field must extend well past the viewport or
-      // swinging the sheet would expose bare edges.
+      // Generous overscan: near rows travel up to ~107px under parallax, so
+      // the field must extend well past the viewport or swinging the sheet
+      // would expose bare edges.
       const margin = 200;
 
       const next: Dot[] = [];
@@ -155,21 +151,12 @@ export default function DotField() {
         // Near rows (d -> 1) swing far more than the distant arc, which is
         // what sells the depth — a uniform shift would just look like a pan.
         const par = 0.32 + p.d * 1.25;
-        let px = p.x + parX * par;
-        let py = p.y + parY * par;
+        const px = p.x + parX * par;
+        const py = p.y + parY * par;
 
         if (q < R2) {
-          const dist = Math.sqrt(q);
-          const t = 1 - dist / R;
+          const t = 1 - Math.sqrt(q) / R;
           near = t * t * glow.on;
-
-          // Push the dot directly away from the cursor, easing off with
-          // distance, so the field visibly parts around the pointer.
-          if (dist > 0.001 && !reduce) {
-            const shove = (t * t * PUSH * glow.on) / dist;
-            px += dx * shove;
-            py += dy * shove;
-          }
         }
 
         const twinkle = reduce ? 0 : Math.sin(time * 0.8 + p.ph) * 0.5 + 0.5;
