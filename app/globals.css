@@ -154,6 +154,18 @@
   }
 }
 
+/* Skills section's code-file cursor. */
+@keyframes cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
 @keyframes scroll-hint {
   0%,
   100% {
