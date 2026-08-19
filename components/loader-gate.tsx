@@ -21,10 +21,30 @@ export default function LoaderGate() {
       return;
     }
 
+    // Honoured before anything else: a URL flag is usually set by whoever is
+    // building the site, but the motion preference belongs to whoever is
+    // reading it.
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      completeLoading();
+      return;
+    }
+
+    // ?loader=0 skips it, ?loader (or ?loader=1) forces it even once seen.
+    const flag = new URLSearchParams(window.location.search).get("loader");
+    if (flag === "0") {
+      completeLoading();
+      return;
+    }
+
+    // In production the loader is a first-impression, not something to sit
+    // through on every navigation, so it runs once per tab session. In
+    // development that gate just hides the thing you are working on, so a
+    // reload always replays it.
+    const replay = flag !== null || process.env.NODE_ENV === "development";
     const seen = sessionStorage.getItem("portfolio-loader-seen");
 
-    if (prefersReducedMotion || seen) {
+    if (!replay && seen) {
       completeLoading();
       return;
     }
