@@ -76,19 +76,25 @@
 /* Code symbols drifting down-left through the hero's empty top-right corner.
    Travel points back toward the headline, so the motion leads the eye into
    the content rather than away from it. Pure CSS: no per-frame JS. */
+/* Travel distance comes from per-tier custom properties, so nearer symbols
+   cross more ground than distant ones in the same pass — parallax rather than
+   a flat sheet of everything moving alike. */
 @keyframes meteor-drift {
   0% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale(0.94);
     opacity: 0;
   }
-  14% {
+  12% {
     opacity: 1;
   }
-  72% {
-    opacity: 0.85;
+  70% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 0.45;
   }
   100% {
-    transform: translate3d(-190px, 235px, 0);
+    transform: translate3d(var(--mx, -190px), var(--my, 235px), 0) scale(1.02);
     opacity: 0;
   }
 }
@@ -96,20 +102,32 @@
 .meteor {
   position: absolute;
   animation: meteor-drift linear infinite both;
+  will-change: transform, opacity;
+  /* Bloom on the head, so the symbol reads as the bright end of the streak. */
+  text-shadow: 0 0 10px currentColor;
 }
 
-/* The trail extends up-right, back along the direction of travel. */
+/* The trail extends up-right, back along the direction of travel. Tapered
+   with a mid stop and softened with a slight blur so it reads as a streak
+   rather than a drawn line. */
 .meteor::after {
   content: "";
   position: absolute;
   left: 100%;
   top: 50%;
-  width: 52px;
-  height: 1px;
+  width: var(--trail, 62px);
+  height: 1.5px;
+  border-radius: 999px;
   transform-origin: left center;
   transform: rotate(-51deg);
-  background: linear-gradient(to right, currentColor, transparent);
-  opacity: 0.4;
+  background: linear-gradient(
+    to right,
+    currentColor 0%,
+    color-mix(in srgb, currentColor 45%, transparent) 40%,
+    transparent 100%
+  );
+  opacity: 0.85;
+  filter: blur(0.7px);
 }
 
 @media (prefers-reduced-motion: reduce) {
