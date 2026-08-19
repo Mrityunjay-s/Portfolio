@@ -14,7 +14,7 @@ const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrai
 export const metadata: Metadata = {
   title: "Mrityunjay Singh | Dev",
   description:
-    "Mobile developer building apps end to end — React Native and Kotlin on the surface, Java Spring Boot behind it.",
+    "Full stack engineer in Bengaluru building secure Spring Boot microservices, cross-platform React Native apps, and AI agents on Azure AI Foundry.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

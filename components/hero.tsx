@@ -45,7 +45,7 @@ export default function Hero() {
           custom={0}
         >
           <span className="text-accent">{"/// "}</span>
-          Full Stack Engineer &mdash; Spring Boot &middot; React Native &middot; Azure AI
+          Full Stack Engineer <span className="text-accent">&mdash;</span> Spring Boot <span className="text-accent">&middot;</span> React Native <span className="text-accent">&middot;</span> Azure AI
         </motion.p>
 
         <motion.h1
