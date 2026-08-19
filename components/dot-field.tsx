@@ -13,9 +13,9 @@ type Dot = {
 };
 
 // Canvas cannot use CSS tokens directly, so both colours are read off the
-// document rather than hardcoded — keeps the field in step with the current
-// theme's --accent-rgb / --dot-rgb instead of duplicating them here and
-// letting canvas and CSS drift apart across a light/dark toggle.
+// document rather than hardcoded — keeps the field in step with
+// --accent-rgb / --dot-rgb in globals.css instead of duplicating the values
+// here and letting canvas and CSS drift apart if either one changes.
 function readVar(name: string, fallback: string) {
   if (typeof window === "undefined") return fallback;
   const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -42,18 +42,8 @@ export default function DotField() {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasHover = window.matchMedia("(hover: hover)").matches;
-    // let, not const: the theme toggle flips document.documentElement's
-    // data-theme attribute after this canvas has already mounted, so a
-    // MutationObserver below re-reads both on change rather than baking in
-    // whatever theme happened to be active at mount.
-    let ACCENT = readVar("--accent-rgb", "76,158,245");
-    let DOT = readVar("--dot-rgb", "190,193,183");
-
-    const themeObserver = new MutationObserver(() => {
-      ACCENT = readVar("--accent-rgb", "76,158,245");
-      DOT = readVar("--dot-rgb", "190,193,183");
-    });
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    const ACCENT = readVar("--accent-rgb", "76,158,245");
+    const DOT = readVar("--dot-rgb", "190,193,183");
 
     let W = 0;
     let H = 0;
@@ -268,7 +258,6 @@ export default function DotField() {
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(resizeTimer);
-      themeObserver.disconnect();
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("pointerdown", onPointer);
       document.removeEventListener("pointerleave", onLeave);

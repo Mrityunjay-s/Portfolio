@@ -8,7 +8,6 @@ import { links } from "@/lib/data";
 import { useActiveSectionContext } from "@/context/active-section-context";
 import { useLoaderContext } from "@/context/loader-context";
 import { handleHashNavClick } from "@/lib/hooks";
-import ThemeToggle from "./theme-toggle";
 
 export default function Header() {
   const { activeSection, setActiveSection, setTimeOfLastClick } = useActiveSectionContext();
@@ -61,9 +60,6 @@ export default function Header() {
                     // padding and type shrink continuously down to a 320px
                     // phone (clamp's lower bound), instead of snapping at one
                     // fixed size and being tight everywhere just above it.
-                    // Below sm this is also what makes room for the theme
-                    // toggle to keep its full touch target — see its own
-                    // shrink-0 for why that matters.
                     "relative flex items-center rounded-full whitespace-nowrap transition-colors",
                     "px-[clamp(0.5rem,2.4vw,0.625rem)] py-1.5 text-[clamp(0.64rem,2.7vw,0.72rem)]",
                     "sm:px-4 sm:text-[0.82rem]",
@@ -83,8 +79,6 @@ export default function Header() {
             ))}
           </ul>
         </nav>
-
-        <ThemeToggle />
       </div>
     </motion.header>
   );
