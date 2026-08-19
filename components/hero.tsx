@@ -49,13 +49,26 @@ export default function Hero() {
   // The hero recedes rather than simply leaving: it shrinks, dims, and — the
   // part that reads as parallax — travels *down* relative to the page, so it
   // lags behind the scroll while About arrives at full speed over it.
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.86]);
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  // Front-loaded: spread evenly, most of the change happens once the hero is
+  // already past the viewport edge where nobody sees it. Half the shrink lands
+  // in the first 50% of travel, while the hero still fills the screen.
+  const heroScale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.82, 0.66]);
+  const heroY = useTransform(scrollYProgress, [0, 0.5, 1], ["0%", "13%", "32%"]);
+  // Deliberately slower than the shrink. The previous version faded out first,
+  // which hid the very motion it was meant to show — you cannot watch
+  // something recede after it has already gone.
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6, 0.95], [1, 0.75, 0]);
+  // Depth cue, kept shallow: this layer contains a live canvas, and a heavy
+  // blur on it would cost more than the effect is worth on a mid-range phone.
+  const heroBlur = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    ["blur(0px)", "blur(1.5px)", "blur(5px)"]
+  );
 
   const recede = reduceMotion
     ? undefined
-    : { scale: heroScale, y: heroY, opacity: heroOpacity };
+    : { scale: heroScale, y: heroY, opacity: heroOpacity, filter: heroBlur };
 
   return (
     <section
