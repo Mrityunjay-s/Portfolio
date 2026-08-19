@@ -12,23 +12,23 @@ const SYMBOLS = [
 ];
 
 /** How long the count takes to walk 0 -> 100. */
-export const COUNT_MS = 3200;
+export const COUNT_MS = 1200;
 
-/** Window over which cells begin lighting; plus SWEEP_DUR it lands on COUNT_MS. */
-const SWEEP_SPAN = 2400;
+/** Beat at 100 before the panel starts moving. */
+export const HOLD_MS = 400;
+
+/** Panel slide-up. Total on screen is COUNT_MS + HOLD_MS + EXIT_MS. */
+export const EXIT_MS = 1050;
+
+// Cells start lighting across this window; the last finishes as the count does.
 const SWEEP_DUR = 800;
+const SWEEP_SPAN = COUNT_MS - SWEEP_DUR;
 
 type Cell = { char: string; t: number };
 
-type PageLoaderProps = {
-  visible: boolean;
-  onCounted?: () => void;
-  onExitComplete?: () => void;
-};
-
 /**
- * Memoised so the per-frame count in the parent never re-renders the grid.
- * The sweep is pure CSS, driven by each cell's --t.
+ * Memoised so the count ticking in the parent never re-renders several hundred
+ * cells. The sweep itself is pure CSS, driven by each cell's animation-delay.
  */
 const SymbolField = React.memo(function SymbolField({
   cells,
@@ -68,11 +68,16 @@ const SymbolField = React.memo(function SymbolField({
   );
 });
 
-export default function PageLoader({ visible, onCounted, onExitComplete }: PageLoaderProps) {
-  const [progress, setProgress] = useState(0);
+type PageLoaderProps = {
+  visible: boolean;
+  /** 0-100, owned by the gate so one clock drives both count and exit. */
+  progress: number;
+  onExitComplete?: () => void;
+};
+
+export default function PageLoader({ visible, progress, onExitComplete }: PageLoaderProps) {
   const [grid, setGrid] = useState({ cols: 0, rows: 0 });
   const fieldRef = useRef<HTMLDivElement>(null);
-  const countedRef = useRef(false);
 
   // Size the grid from the element itself, falling back to the viewport and
   // then to a sane default. Measuring window alone is not enough: it reports
@@ -86,10 +91,12 @@ export default function PageLoader({ visible, onCounted, onExitComplete }: PageL
       const w = Math.round(rect?.width || window.innerWidth || 1280);
       const h = Math.round(rect?.height || window.innerHeight || 800);
       const cell = w < 640 ? 34 : 44;
-      setGrid({
+      const next = {
         cols: Math.max(1, Math.ceil(w / cell)),
         rows: Math.max(1, Math.ceil(h / cell)),
-      });
+      };
+      // Bail when unchanged so an identical object cannot spin the observer.
+      setGrid((prev) => (prev.cols === next.cols && prev.rows === next.rows ? prev : next));
     }
 
     measure();
@@ -111,7 +118,7 @@ export default function PageLoader({ visible, onCounted, onExitComplete }: PageL
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
         // Diagonal sweep, matching the tilt of the hero's dot field so the
-        // loader resolves into the same geometry it hands off to.
+        // loader resolves into the geometry it hands off to.
         const t = (x / (cols - 1 || 1)) * 0.62 + (y / (rows - 1 || 1)) * 0.38;
         // Hashed from the coordinates rather than randomised: stable across
         // re-renders, and identical on server and client so it cannot cause a
@@ -123,52 +130,7 @@ export default function PageLoader({ visible, onCounted, onExitComplete }: PageL
     return out;
   }, [grid]);
 
-  // Count all the way to 100 rather than stalling short and faking the last
-  // stretch. If the document is still loading when the clock runs out, hold at
-  // 99 until it settles, so the number never claims to be done before it is.
-  useEffect(() => {
-    if (!visible) return;
-
-    const start = performance.now();
-    let loaded = document.readyState === "complete";
-    const onLoad = () => {
-      loaded = true;
-    };
-    if (!loaded) window.addEventListener("load", onLoad);
-
-    function finish() {
-      if (countedRef.current) return;
-      countedRef.current = true;
-      setProgress(100);
-      onCounted?.();
-    }
-
-    // Interval rather than requestAnimationFrame: rAF is suspended entirely in
-    // a background tab, which would strand a visitor behind a frozen loader
-    // until they returned. Progress is derived from elapsed time, so a
-    // throttled interval simply catches up instead of falling behind.
-    const id = setInterval(() => {
-      const t = Math.min(1, (performance.now() - start) / COUNT_MS);
-      // Gentle ease so the count starts and finishes smoothly.
-      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-      const pct = loaded ? eased * 100 : Math.min(eased * 100, 99);
-
-      setProgress(pct);
-      if (pct >= 100) finish();
-    }, 30);
-
-    // Last resort: never let a stalled `load` event or a throttled timer trap
-    // someone on the loader.
-    const failsafe = setTimeout(finish, COUNT_MS + 2500);
-
-    return () => {
-      clearInterval(id);
-      clearTimeout(failsafe);
-      window.removeEventListener("load", onLoad);
-    };
-  }, [visible, onCounted]);
-
-  const display = Math.round(visible ? progress : 100);
+  const display = Math.min(100, Math.round(progress));
 
   return (
     <AnimatePresence onExitComplete={onExitComplete}>
@@ -177,10 +139,7 @@ export default function PageLoader({ visible, onCounted, onExitComplete }: PageL
           key="page-loader"
           className="fixed inset-0 z-200 overflow-hidden bg-ink"
           initial={{ y: 0 }}
-          exit={{
-            y: "-100%",
-            transition: { duration: 1.05, ease: [0.76, 0, 0.24, 1] },
-          }}
+          exit={{ y: "-100%", transition: { duration: EXIT_MS / 1000, ease: [0.76, 0, 0.24, 1] } }}
         >
           <SymbolField cells={cells} cols={grid.cols} rows={grid.rows} fieldRef={fieldRef} />
 

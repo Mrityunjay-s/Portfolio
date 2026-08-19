@@ -1,19 +1,24 @@
 "use client";
 
-import React, { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import PageLoader from "./page-loader";
+import PageLoader, { COUNT_MS, HOLD_MS } from "./page-loader";
 import { useLoaderContext } from "@/context/loader-context";
-
-// Beat to let 100% register before the panel starts moving.
-const HOLD_MS = 420;
 
 export default function LoaderGate() {
   const pathname = usePathname();
   const { startLoading, completeLoading } = useLoaderContext();
   const [showLoader, setShowLoader] = useState(false);
-  const [counted, setCounted] = useState(false);
+  const [progress, setProgress] = useState(0);
   const isHome = pathname === "/";
+
+  // Kept in a ref so the timing effect below depends only on `showLoader`.
+  // Threading it through the dependency array risks the interval being torn
+  // down and restarted mid-count, which would stall the loader indefinitely.
+  const completeRef = useRef(completeLoading);
+  useEffect(() => {
+    completeRef.current = completeLoading;
+  }, [completeLoading]);
 
   useLayoutEffect(() => {
     if (!isHome) {
@@ -37,7 +42,7 @@ export default function LoaderGate() {
       return;
     }
 
-    // In production the loader is a first-impression, not something to sit
+    // In production the loader is a first impression, not something to sit
     // through on every navigation, so it runs once per tab session. In
     // development that gate just hides the thing you are working on, so a
     // reload always replays it.
@@ -61,23 +66,45 @@ export default function LoaderGate() {
     window.scrollTo(0, 0);
   }, [isHome, startLoading, completeLoading]);
 
-  // The loader owns the count and reports when it genuinely reaches 100, so
-  // the exit is driven by the number finishing rather than by a parallel timer
-  // that could fire while the count was still short of the end.
-  const handleCounted = useCallback(() => setCounted(true), []);
-
+  // One clock owns both the count and the exit. Splitting them across two
+  // components meant the count could finish while the hand-off that ends the
+  // loader silently never fired, leaving the panel up forever.
   useEffect(() => {
-    if (!counted || !showLoader) return;
-    const exitTimer = setTimeout(() => {
+    if (!showLoader) return;
+
+    const start = performance.now();
+    let exitTimer: ReturnType<typeof setTimeout>;
+
+    function end() {
       setShowLoader(false);
       // Released as the panel *starts* moving, not when it lands, so the page
       // underneath travels at the same time. Releasing on exit-complete would
       // play the two sequentially and lose the parallax entirely.
-      completeLoading();
+      completeRef.current();
       sessionStorage.setItem("portfolio-loader-seen", "1");
-    }, HOLD_MS);
-    return () => clearTimeout(exitTimer);
-  }, [counted, showLoader, completeLoading]);
+    }
+
+    // Interval rather than requestAnimationFrame: rAF is suspended entirely in
+    // a background tab, which would strand a visitor behind a frozen loader.
+    // Progress is derived from elapsed time, so a throttled interval catches
+    // up rather than falling behind.
+    const id = setInterval(() => {
+      const t = Math.min(1, (performance.now() - start) / COUNT_MS);
+      // Gentle ease so the count starts and finishes smoothly.
+      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      setProgress(eased * 100);
+
+      if (t >= 1) {
+        clearInterval(id);
+        exitTimer = setTimeout(end, HOLD_MS);
+      }
+    }, 30);
+
+    return () => {
+      clearInterval(id);
+      clearTimeout(exitTimer);
+    };
+  }, [showLoader]);
 
   const handleExitComplete = useCallback(() => {
     document.body.style.overflow = "";
@@ -89,7 +116,7 @@ export default function LoaderGate() {
   return (
     <PageLoader
       visible={showLoader}
-      onCounted={handleCounted}
+      progress={progress}
       onExitComplete={handleExitComplete}
     />
   );
