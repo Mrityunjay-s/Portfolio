@@ -166,6 +166,37 @@
   }
 }
 
+/* Skills marquee. Each row's track is the skill list rendered twice back to
+   back; scrolling exactly -50% moves through one full copy and lands back on
+   an identical frame, so the loop has no visible seam. */
+@keyframes skill-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.skill-marquee-row {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.skill-marquee-track {
+  animation-name: skill-marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Pausing on hover/focus is the accessibility mitigation for auto-scrolling
+   text: it stays ambient at a glance but becomes readable the moment
+   someone actually tries to read it, without needing a separate control. */
+.skill-marquee-row:hover .skill-marquee-track,
+.skill-marquee-row:focus-within .skill-marquee-track {
+  animation-play-state: paused;
+}
+
 @keyframes scroll-hint {
   0%,
   100% {
