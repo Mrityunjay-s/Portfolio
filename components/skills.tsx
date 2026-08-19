@@ -8,7 +8,9 @@ import { useSectionInView } from "@/lib/hooks";
 
 // Skills Mrityunjay leads with, highlighted so the list has a hierarchy
 // instead of reading as one flat wall of equal-weight tags. Matches what the
-// About bio calls out by name.
+// About bio calls out by name, plus Kafka and Kubernetes — both called out
+// as standout 2026 hiring signals for backend roles in industry sources, and
+// both already verified on the resume rather than added for the label.
 const PRIMARY = new Set([
   "Java",
   "Spring Boot",
@@ -16,6 +18,8 @@ const PRIMARY = new Set([
   "React Native",
   "Azure AI Foundry",
   "RAG",
+  "Kafka",
+  "Kubernetes",
 ]);
 
 export default function Skills() {
