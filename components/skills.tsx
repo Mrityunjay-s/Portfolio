@@ -6,13 +6,13 @@ import SectionHeading from "./section-heading";
 import { skillsData } from "@/lib/data";
 import { useSectionInView } from "@/lib/hooks";
 
-// Skills Mrityunjay leads with, highlighted so the list has a hierarchy
-// instead of reading as one flat wall of equal-weight tags. Matches what the
-// About bio calls out by name, plus Kafka, Kubernetes and MCP — all called
-// out as standout 2026 hiring signals in industry sources, and all
-// confirmed as real hands-on experience rather than added for the label.
-// MCP specifically: sources describe engineers who can build MCP servers as
-// "a small minority of the AI engineering workforce as of 2026."
+// Highlighted = differentiators, not just "real skills". Everything in this
+// list clears a specific bar: named in the About bio, called out by industry
+// sources as a standout 2026 signal, or tied to a named resume project.
+// Deliberately excludes real, verified skills that are simply expected at
+// this level (TypeScript, Docker, PostgreSQL, System Design, ...) — accenting
+// the baseline alongside the differentiators would flatten the hierarchy
+// this set exists to create.
 const PRIMARY = new Set([
   "Java",
   "Spring Boot",
@@ -22,7 +22,20 @@ const PRIMARY = new Set([
   "RAG",
   "Kafka",
   "Kubernetes",
+  // "Engineers who can build MCP servers are a small minority of the AI
+  // engineering workforce as of 2026" — industry source, not a resume claim.
   "MCP",
+  // "Kafka and event-driven architectures are in massive demand" — same
+  // source; this is the architectural skill the tool above implements.
+  "Event-Driven Architecture",
+  // Title of the named Microservices Platform project, and the exact
+  // framing sources used for what separates a 2026 backend hire: an
+  // engineer who can "build, deploy, operate, secure, and scale services
+  // in production."
+  "Microservices",
+  // One of the "most widely adopted AI agent frameworks" per sources;
+  // confirmed hands-on rather than added for the label.
+  "LangChain",
 ]);
 
 export default function Skills() {
