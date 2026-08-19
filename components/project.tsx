@@ -56,12 +56,12 @@ export default function Project({
         <div className="grid grid-cols-1 items-baseline gap-x-2 gap-y-0.5 sm:grid-cols-[1fr_auto]">
           <div className="flex flex-wrap items-baseline gap-2 min-w-0">
             <span className="font-mono text-[0.72rem] text-accent">{hash}</span>
-            <h3 className="text-[0.98rem] font-semibold tracking-[-0.01em] break-words">{title}</h3>
+            <h3 className="text-[0.98rem] font-semibold tracking-[-0.01em] wrap-break-word">{title}</h3>
           </div>
           <span className="font-mono text-[0.68rem] text-dim">{when}</span>
         </div>
 
-        <p className="mt-1.5 max-w-[62ch] text-[0.86rem] leading-relaxed text-muted">
+        <p className="mt-1.5 max-w-[72ch] text-[0.86rem] leading-relaxed text-muted">
           {body}
           {body2 ? ` ${body2}` : ""}
         </p>

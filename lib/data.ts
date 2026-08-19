@@ -63,7 +63,7 @@ export const sectionHash: Record<string, string> = Object.fromEntries(
 export const projectsData = [
   {
     hash: "a3f9c2e",
-    when: "resume · current role",
+    when: "current ongoing",
     title: "Microservices Platform",
     body: "Architected a production-grade microservices system with event-driven communication via Apache Kafka, synchronous inter-service calls with OpenFeign, service discovery via Eureka, and centralized configuration with Spring Cloud Config.",
     body2:
@@ -80,8 +80,8 @@ export const projectsData = [
   },
   {
     hash: "e17b04d",
-    when: "resume · current role",
-    title: "AI Escalation Agent",
+    when: "current ongoing",
+    title: "AI Agent",
     body: "Designed and built an autonomous AI agent in Python on Microsoft Azure AI Foundry that classifies customer conversations into resolution and escalation workflows using LLM reasoning, cutting manual intervention by 60%.",
     body2:
       "RAG pipelines with FastAPI, Azure OpenAI embeddings, and a vector database cut response latency by 30% across 500+ weekly conversations.",
