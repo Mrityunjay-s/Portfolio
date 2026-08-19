@@ -17,14 +17,15 @@ export default function HomeShell({ children }: { children: React.ReactNode }) {
       // toward the viewer. It is fully opaque throughout — revealed by the
       // panel leaving, never by fading in.
       //
-      // 0.74 is deliberately far enough to register: anything nearer 1 is
-      // perceptible only as a vague drift rather than as a zoom. The page is
-      // horizontally centred by origin-top, so the inset while it is small
-      // reads as depth against the same near-black ground.
-      animate={isWaiting ? { scale: 0.74 } : { scale: 1 }}
+      // Starts at roughly half size so the growth is the loudest thing in the
+      // hand-off. The page is horizontally centred by origin-top, so the inset
+      // while it is small reads as depth against the same near-black ground.
+      // Much below this it stops reading as a page zooming in and starts
+      // reading as a small page that happens to grow.
+      animate={isWaiting ? { scale: 0.55 } : { scale: 1 }}
       // Slower than the panel's 1.05s exit, so the zoom is still settling
       // after the panel has gone. That lag is the parallax.
-      transition={{ duration: 1.45, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
