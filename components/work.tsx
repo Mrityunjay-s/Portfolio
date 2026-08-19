@@ -11,7 +11,7 @@ export function Projects() {
 
   return (
     <section ref={ref} id="work" className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-14 pb-24 sm:px-10">
-      <SectionHeading eyebrow="03 / Work">git log --oneline --graph</SectionHeading>
+      <SectionHeading eyebrow="03 / Work">Things I&apos;ve shipped</SectionHeading>
 
       {/* A log, not a grid — no empty "slot" placeholders needed here the way
           a 2-up card grid needed them: a shorter list still reads as

@@ -76,7 +76,7 @@ export default function Skills() {
   if (reduceMotion) {
     return (
       <section ref={ref} id="skills" className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-14 pb-24 sm:px-10">
-        <SectionHeading eyebrow="02 / Skills">What I reach for</SectionHeading>
+        <SectionHeading eyebrow="02 / Skills">Stack &amp; tools</SectionHeading>
         <ul className="flex flex-wrap gap-2">
           {ALL_SKILLS.map((skill) => (
             <li key={skill}>
@@ -90,7 +90,7 @@ export default function Skills() {
 
   return (
     <section ref={ref} id="skills" className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-14 pb-24 sm:px-10">
-      <SectionHeading eyebrow="02 / Skills">What I reach for</SectionHeading>
+      <SectionHeading eyebrow="02 / Skills">Stack &amp; tools</SectionHeading>
 
       <motion.div
         className="flex flex-col gap-3"

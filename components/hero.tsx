@@ -103,9 +103,11 @@ export default function Hero() {
           custom={1}
         >
           <span className="block">I build what happens</span>
-          <span className="block text-muted">between the request</span>
           <span className="block">
-            and the response
+            between the <span className="text-muted">request</span>
+          </span>
+          <span className="block">
+            and the <span className="text-muted">response</span>
             <span className="ml-[0.06em] inline-block h-[0.135em] w-[0.135em] rounded-full bg-accent align-baseline shadow-[0_0_28px_rgba(var(--accent-rgb),0.55)]" />
           </span>
         </motion.h1>
