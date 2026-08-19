@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { BsArrowRight, BsLinkedin } from "react-icons/bs";
 import { HiDownload } from "react-icons/hi";
 import { FaGithub } from "react-icons/fa";
@@ -22,17 +22,51 @@ const rise = {
 };
 
 export default function Hero() {
-  const { ref } = useSectionInView("Home", 0.4);
+  const { ref: inViewRef } = useSectionInView("Home", 0.4);
   const { setActiveSection, setTimeOfLastClick } = useActiveSectionContext();
   const { isLoaded, hasChecked } = useLoaderContext();
   const shouldAnimate = hasChecked && isLoaded;
+  const reduceMotion = useReducedMotion();
+
+  // useSectionInView hands back a callback ref, and useScroll needs an object
+  // ref on the same node, so both are pointed at it here.
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const setRefs = useCallback(
+    (node: HTMLElement | null) => {
+      sectionRef.current = node;
+      inViewRef(node);
+    },
+    [inViewRef]
+  );
+
+  // Runs from the hero sitting at the top of the viewport to it having fully
+  // scrolled past.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  // The hero recedes rather than simply leaving: it shrinks, dims, and — the
+  // part that reads as parallax — travels *down* relative to the page, so it
+  // lags behind the scroll while About arrives at full speed over it.
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.86]);
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  const recede = reduceMotion
+    ? undefined
+    : { scale: heroScale, y: heroY, opacity: heroOpacity };
 
   return (
     <section
-      ref={ref}
+      ref={setRefs}
       id="home"
-      className="relative isolate flex min-h-svh w-full flex-col justify-center overflow-hidden"
+      className="relative isolate min-h-svh w-full overflow-hidden"
     >
+      <motion.div
+        style={recede}
+        className="flex min-h-svh w-full flex-col justify-center will-change-transform"
+      >
       <DotField />
       <HeroMeteors />
 
@@ -139,6 +173,7 @@ export default function Hero() {
           className="h-5 w-px bg-linear-to-b from-dim to-transparent"
           style={{ animation: "scroll-hint 2.4s ease-in-out infinite" }}
         />
+      </motion.div>
       </motion.div>
     </section>
   );
