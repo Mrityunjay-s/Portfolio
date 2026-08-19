@@ -136,6 +136,36 @@
   }
 }
 
+/* Swap copy by input type rather than by user agent. Done in CSS so it stays
+   correct after hydration and on hybrid devices, where a JS check made once at
+   mount would be wrong the moment someone picks up a stylus or docks a mouse. */
+.hover-only {
+  display: none;
+}
+.touch-only {
+  display: inline;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hover-only {
+    display: inline;
+  }
+  .touch-only {
+    display: none;
+  }
+}
+
+@keyframes scroll-hint {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(7px);
+    opacity: 1;
+  }
+}
+
 @utility label-mono {
   font-family: var(--font-mono);
   font-size: 0.66rem;

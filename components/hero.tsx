@@ -38,13 +38,14 @@ export default function Hero() {
 
       <div className="pointer-events-none relative z-10 mx-auto w-full max-w-350 px-5 pb-16 pt-32 sm:px-10">
         <motion.p
-          className="label-mono mb-5 text-amber-100"
+          className="label-mono mb-5 text-dim"
           variants={rise}
           initial="initial"
           animate={shouldAnimate ? "animate" : "initial"}
           custom={0}
         >
-          {"/// "}Mobile Developer &mdash; React Native &middot; Kotlin &middot; Spring Boot
+          <span className="text-accent">{"/// "}</span>
+          Full Stack Engineer &mdash; Spring Boot &middot; React Native &middot; Azure AI
         </motion.p>
 
         <motion.h1
@@ -118,9 +119,27 @@ export default function Hero() {
           animate={shouldAnimate ? "animate" : "initial"}
           custom={3}
         >
-          Move your cursor
+          {/* A phone has no cursor to move. Swapped in CSS by input type. */}
+          <span className="hover-only">Move your cursor</span>
+          <span className="touch-only">Drag the field</span>
         </motion.p>
       </div>
+
+      {/* Full-height hero with centred content gives no hint that anything
+          follows it, so the affordance is explicit. */}
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 bottom-7 z-10 flex flex-col items-center gap-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: shouldAnimate ? 1 : 0 }}
+        transition={{ delay: 0.7, duration: 0.6 }}
+      >
+        <span className="label-mono text-dim">Scroll</span>
+        <span
+          aria-hidden="true"
+          className="h-5 w-px bg-linear-to-b from-dim to-transparent"
+          style={{ animation: "scroll-hint 2.4s ease-in-out infinite" }}
+        />
+      </motion.div>
     </section>
   );
 }
