@@ -15,13 +15,15 @@ const SYMBOLS = [
 export const COUNT_MS = 1200;
 
 /** Beat at 100 before the panel starts moving. */
-export const HOLD_MS = 400;
+export const HOLD_MS = 250;
 
 /** Panel slide-up. Total on screen is COUNT_MS + HOLD_MS + EXIT_MS. */
-export const EXIT_MS = 1050;
+export const EXIT_MS = 800;
 
 // Cells start lighting across this window; the last finishes as the count does.
-const SWEEP_DUR = 800;
+// Kept well under COUNT_MS so the stagger still spreads across the diagonal —
+// too long a cell animation and the whole grid lights almost at once.
+const SWEEP_DUR = 500;
 const SWEEP_SPAN = COUNT_MS - SWEEP_DUR;
 
 type Cell = { char: string; t: number };
