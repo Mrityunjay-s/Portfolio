@@ -18,24 +18,18 @@ const IMPACT = [
   { value: "70%", label: "Less doc search time", detail: "RAG over 10,000+ documents" },
 ];
 
-// Curated from the resume rather than copied wholesale — listing every
-// framework and tool stops communicating. Kept to what signals range
-// (languages), depth (backend, AI) and the parts a reader would otherwise
-// wonder about (databases).
+// The headline, not the inventory. This was seven rows of comma-strings —
+// Backend and AI alone ran 8 items each — duplicating almost the entire
+// Skills section in paragraph form. Skills already carries all 47 in full,
+// so this card's job is different: a handful of names per area, matching
+// the differentiators Skills already highlights, enough to signal range at
+// a glance without repeating the same list a second time.
 const STACK = [
-  { area: "Languages", items: "Java · Kotlin · Go · Python · TypeScript · SQL" },
-  {
-    area: "Backend",
-    items: "Spring Boot · Spring Security · FastAPI · Microservices · Event-driven · REST · GraphQL · gRPC",
-  },
-  { area: "Mobile", items: "React Native · Android (Kotlin) · iOS (Swift)" },
-  {
-    area: "AI",
-    items: "Azure AI Foundry · Azure OpenAI · RAG · AI agents · Vector embeddings · LangChain · MCP · Spring AI",
-  },
-  { area: "Data", items: "PostgreSQL · Azure SQL · MongoDB · Redis · Kafka · Elasticsearch" },
-  { area: "Cloud", items: "Azure · Docker · Kubernetes · Terraform · CI/CD" },
-  { area: "Practices", items: "System design · Design patterns · Secure coding · SDLC · Agile" },
+  { area: "Languages", items: ["Java", "Kotlin", "Python", "Go"] },
+  { area: "Backend", items: ["Spring Boot", "Microservices", "Kafka", "PostgreSQL"] },
+  { area: "Mobile", items: ["React Native", "Swift"] },
+  { area: "AI", items: ["Azure AI Foundry", "RAG", "LangChain", "MCP"] },
+  { area: "Cloud", items: ["Docker", "Kubernetes", "Terraform"] },
 ];
 
 export default function About() {
@@ -120,11 +114,20 @@ export default function About() {
         </BentoCard>
 
         <BentoCard className="min-h-44 sm:col-span-2 lg:col-span-4" label="Stack">
-          <ul className="flex flex-col gap-2.5">
+          <ul className="flex flex-col gap-3">
             {STACK.map((row) => (
-              <li key={row.area} className="flex flex-col gap-0.5 sm:flex-row sm:gap-4">
-                <span className="label-mono w-20 shrink-0 pt-0.5 text-dim">{row.area}</span>
-                <span className="text-[0.86rem] leading-relaxed text-muted">{row.items}</span>
+              <li key={row.area} className="flex flex-col gap-1.5 sm:flex-row sm:items-start sm:gap-4">
+                <span className="label-mono w-20 shrink-0 pt-1 text-dim">{row.area}</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {row.items.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-md border border-line bg-surface-2 px-2.5 py-1 font-mono text-[0.68rem] tracking-wide text-muted"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </li>
             ))}
           </ul>
