@@ -8,9 +8,11 @@ import { useSectionInView } from "@/lib/hooks";
 
 // Skills Mrityunjay leads with, highlighted so the list has a hierarchy
 // instead of reading as one flat wall of equal-weight tags. Matches what the
-// About bio calls out by name, plus Kafka and Kubernetes — both called out
-// as standout 2026 hiring signals for backend roles in industry sources, and
-// both already verified on the resume rather than added for the label.
+// About bio calls out by name, plus Kafka, Kubernetes and MCP — all called
+// out as standout 2026 hiring signals in industry sources, and all
+// confirmed as real hands-on experience rather than added for the label.
+// MCP specifically: sources describe engineers who can build MCP servers as
+// "a small minority of the AI engineering workforce as of 2026."
 const PRIMARY = new Set([
   "Java",
   "Spring Boot",
@@ -20,6 +22,7 @@ const PRIMARY = new Set([
   "RAG",
   "Kafka",
   "Kubernetes",
+  "MCP",
 ]);
 
 export default function Skills() {

@@ -30,10 +30,10 @@ const STACK = [
   { area: "Mobile", items: "React Native · Android (Kotlin) · iOS (Swift)" },
   {
     area: "AI",
-    items: "Azure AI Foundry · Azure OpenAI · RAG · AI agents · Vector embeddings · Spring AI",
+    items: "Azure AI Foundry · Azure OpenAI · RAG · AI agents · Vector embeddings · LangChain · MCP · Spring AI",
   },
   { area: "Data", items: "PostgreSQL · Azure SQL · MongoDB · Redis · Kafka · Elasticsearch" },
-  { area: "Cloud", items: "Azure · Docker · Kubernetes · CI/CD" },
+  { area: "Cloud", items: "Azure · Docker · Kubernetes · Terraform · CI/CD" },
   { area: "Practices", items: "System design · Design patterns · Secure coding · SDLC · Agile" },
 ];
 
@@ -41,7 +41,7 @@ export default function About() {
   const { ref } = useSectionInView("About", 0.25);
 
   return (
-    <section ref={ref} id="about" className="mx-auto w-full max-w-350 scroll-mt-24 px-5 pt-14 pb-24 sm:px-10">
+    <section ref={ref} id="about" className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-12 pb-24 sm:px-10">
       <SectionHeading eyebrow="01 / About">Client call to production</SectionHeading>
 
       <motion.div
