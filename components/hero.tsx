@@ -7,6 +7,7 @@ import { BsArrowRight, BsLinkedin } from "react-icons/bs";
 import { HiDownload } from "react-icons/hi";
 import { FaGithub } from "react-icons/fa";
 import DotField from "./dot-field";
+import HeroMeteors from "./hero-meteors";
 import { useSectionInView } from "@/lib/hooks";
 import { useActiveSectionContext } from "@/context/active-section-context";
 import { useLoaderContext } from "@/context/loader-context";
@@ -33,6 +34,7 @@ export default function Hero() {
       className="relative isolate flex min-h-svh w-full flex-col justify-center overflow-hidden"
     >
       <DotField />
+      <HeroMeteors />
 
       <div className="pointer-events-none relative z-10 mx-auto w-full max-w-350 px-5 pb-16 pt-32 sm:px-10">
         <motion.p
