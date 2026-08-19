@@ -12,8 +12,27 @@ type Dot = {
   ph: number;
 };
 
-const ACCENT = "198,245,60";
 const BASE = "190,193,183";
+
+// Canvas cannot use CSS tokens directly, so read the accent triple off the
+// document. Keeps the field in step with --accent-rgb instead of duplicating
+// the colour here and letting the two drift apart.
+function readAccent() {
+  if (typeof window === "undefined") return "198,245,60";
+  const v = getComputedStyle(document.documentElement)
+    .getPropertyValue("--accent-rgb")
+    .trim();
+  return v || "198,245,60";
+}
+
+// Shape of the projected surface, in world space before perspective.
+//   CURVE bows the edges downward — 0 is a flat plane, higher closes it into
+//         a dome.
+//   TILT  leans the surface so one side rides higher than the other.
+//   APEX  slides the whole surface vertically without reshaping it.
+const CURVE = 0.084;
+const TILT = 0.4;
+const APEX = -0.15;
 
 export default function DotField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -26,10 +45,7 @@ export default function DotField() {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasHover = window.matchMedia("(hover: hover)").matches;
-
-    // How far a dot is pushed out of the cursor's way, at the centre of the
-    // field of influence.
-    const PUSH = 16;
+    const ACCENT = readAccent();
 
     let W = 0;
     let H = 0;
@@ -51,10 +67,10 @@ export default function DotField() {
       canvas!.height = Math.round(H * dpr);
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // A curved surface seen from below. Depth z runs from near (bottom of
-      // screen) to far (the arc near the top). Screen position scales with
-      // 1/z, so rows bunch toward the horizon on their own; the quadratic
-      // term on x lifts the surface at its edges, which projects as the dome.
+      // A surface seen from below. Depth z runs from near (bottom of screen)
+      // to far (the horizon near the top). Screen position scales with 1/z,
+      // so rows bunch toward the horizon on their own; CURVE and TILT then
+      // shape the surface itself. See the constants at the top of the file.
       const Z_NEAR = 1.0;
       const Z_FAR = 2.6;
       const F_FAR = 1 / Z_FAR;
@@ -62,18 +78,29 @@ export default function DotField() {
 
       const kx = W * 0.9;
       const ky = H * 1.512;
-      const horizon = -H * 0.462;
-      const curve = 0.207;
+      const horizon = -H * 0.462 - H * APEX;
 
-      // Derive the world-space column step from how far apart the tightest
-      // (far) row should read on screen, so density holds across viewports.
-      const farGapPx = W < 620 ? 15 : W < 1100 ? 17 : 19;
+      // CURVE and TILT are shaped against width, not height. Scaling them by
+      // ky would tie the on-screen angle to the viewport's aspect ratio: the
+      // tilt drop is TILT * 1.112 * scale, so an H-based scale makes a tall
+      // phone roughly four times steeper than a wide laptop. A W-based scale
+      // keeps the slope identical everywhere. The 0.85 factor is picked so a
+      // ~16:9.5 laptop matches the previous height-based value.
+      const kShape = W * 0.85;
+
+      // Column step comes from how far apart the tightest (far) row should
+      // read on screen. Scaled with width so the grid stays proportionally as
+      // fine on a phone as on a laptop — a flat 15px gap is ~4% of a 375px
+      // screen but ~1% of a 1728px one, which reads far coarser. Clamped so
+      // dots never merge on small screens or scatter on large ones.
+      const farGapPx = Math.max(10, Math.min(19, W * 0.014));
       const dx = farGapPx / (F_FAR * kx);
-      const rows = W < 620 ? 26 : 34;
-      // Generous overscan: dots travel up to ~55px under parallax plus the
-      // cursor push, so the field must extend past the viewport or sliding
-      // the sheet would expose bare edges.
-      const margin = 110;
+      const rows = W < 620 ? 30 : 34;
+      // Overscan covers the ~107px of parallax travel, and scales with width
+      // so the generated x-range stays aspect-independent — a fixed margin is
+      // a far larger share of a phone's width than a laptop's, which would
+      // stretch the field differently on each.
+      const margin = Math.max(130, W * 0.12);
 
       const next: Dot[] = [];
 
@@ -89,7 +116,7 @@ export default function DotField() {
         for (let i = -iMax; i <= iMax; i++) {
           const x = i * dx;
           const sx = W / 2 + x * f * kx;
-          const sy = horizon + (1 + curve * x * x) * f * ky;
+          const sy = horizon + f * (ky + kShape * (CURVE * x * x + TILT * x));
 
           if (sy > H + margin || sy < -margin) continue;
 
@@ -135,8 +162,12 @@ export default function DotField() {
       // The whole sheet drifts with the cursor, in the same direction. Per-dot
       // depth weighting below makes near rows travel further than the far
       // arc, so it reads as a surface swinging rather than a flat slide.
-      const parX = (glow.x / W - 0.5) * 2 * 30;
-      const parY = (glow.y / H - 0.5) * 2 * 20;
+      // Damped while drifting: at full strength the idle attractor would
+      // swing the sheet constantly, which is distracting on touch devices
+      // that never get a cursor.
+      const parAmp = auto ? 0.3 : 1;
+      const parX = (glow.x / W - 0.5) * 2 * 68 * parAmp;
+      const parY = (glow.y / H - 0.5) * 2 * 44 * parAmp;
 
       const R = Math.min(W, H) * 0.3;
       const R2 = R * R;
@@ -148,23 +179,15 @@ export default function DotField() {
         const q = dx * dx + dy * dy;
 
         let near = 0;
-        // Near rows (d -> 1) swing further than the distant arc.
-        const par = 0.5 + p.d * 0.8;
-        let px = p.x + parX * par;
-        let py = p.y + parY * par;
+        // Near rows (d -> 1) swing far more than the distant arc, which is
+        // what sells the depth — a uniform shift would just look like a pan.
+        const par = 0.32 + p.d * 1.25;
+        const px = p.x + parX * par;
+        const py = p.y + parY * par;
 
         if (q < R2) {
-          const dist = Math.sqrt(q);
-          const t = 1 - dist / R;
+          const t = 1 - Math.sqrt(q) / R;
           near = t * t * glow.on;
-
-          // Push the dot directly away from the cursor, easing off with
-          // distance, so the field visibly parts around the pointer.
-          if (dist > 0.001 && !reduce) {
-            const shove = (t * t * PUSH * glow.on) / dist;
-            px += dx * shove;
-            py += dy * shove;
-          }
         }
 
         const twinkle = reduce ? 0 : Math.sin(time * 0.8 + p.ph) * 0.5 + 0.5;

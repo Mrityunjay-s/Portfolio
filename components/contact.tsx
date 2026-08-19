@@ -17,7 +17,7 @@ export default function Contact() {
     <section
       ref={ref}
       id="contact"
-      className="mx-auto w-full max-w-350 scroll-mt-28 px-5 py-24 sm:px-10"
+      className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-14 pb-24 sm:px-10"
     >
       <motion.div
         initial={{ opacity: 0, y: 40 }}

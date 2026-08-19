@@ -29,7 +29,7 @@ export default function Project({ title, description, tags, imageUrl, index }: P
           sizes="(max-width: 768px) 100vw, 50vw"
           className="h-full w-full object-cover object-top opacity-80 transition duration-500 group-hover:scale-[1.03] group-hover:opacity-100"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface/90 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-surface/90 to-transparent" />
       </div>
 
       <div className="flex flex-col gap-3 p-5">

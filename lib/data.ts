@@ -20,8 +20,8 @@ export const links = [
     hash: "#skills",
   },
   {
-    name: "Projects",
-    hash: "#projects",
+    name: "Work",
+    hash: "#work",
   },
   // {
   //   name: "Experience",
@@ -32,6 +32,12 @@ export const links = [
     hash: "#contact",
   },
 ] as const;
+
+// Reverse lookup for syncing the URL to whatever section is active — the
+// scroll-driven observer only ever knows a SectionName, never the hash.
+export const sectionHash: Record<string, string> = Object.fromEntries(
+  links.map((l) => [l.name, l.hash])
+);
 
 // export const experiencesData = [
 //   {
@@ -69,24 +75,50 @@ export const projectsData = [
   },
 ] as const;
 
-export const skillsData = [
-  "Java",
-  "Spring",
-  "Spring Boot",
-  "Rest API",
-  "Mobile App Development",
-  "Spring MVC",
-  "Kotlin",
-  "Jetpack Compose",
-  "React Native",
-  "Expo",
-  "Firebase",
-  "XML",
-  "JavaScript",
-  "TypeScript",
-  "Data Structure & Algorithm",
-  "Git",
-  "MongoDB",
-  "Figma",
-  "UI/UX Design",
+// Sourced from the resume's Technical Skills section, in the same
+// language -> backend -> mobile -> AI -> data -> cloud -> practices order it
+// uses. Tooling with no scannable signal (Git, Postman, IntelliJ, Maven) and
+// baseline items implied by the frameworks above them (Hibernate, Spring
+// MVC, unit testing) are left out — see the same call made for About's
+// Stack card, which this list otherwise mirrors.
+// Grouped rather than flat: the Skills section renders this as a source
+// file, and the category names are the object's keys.
+export const skillGroups = [
+  { label: "languages", items: ["Java", "Kotlin", "Go", "Python", "TypeScript", "JavaScript", "SQL", "Swift"] },
+  {
+    label: "backend",
+    items: [
+      "Spring Boot",
+      "Spring Security",
+      "FastAPI",
+      "Microservices",
+      "REST APIs",
+      "GraphQL",
+      "gRPC",
+      "WebSockets",
+      "Event-Driven Architecture",
+      "Resilience4j",
+      "OpenFeign",
+    ],
+  },
+  { label: "mobile", items: ["React Native", "Android (Kotlin)", "iOS (Swift)"] },
+  {
+    label: "ai",
+    items: [
+      "Azure AI Foundry",
+      "Azure OpenAI",
+      "RAG",
+      "AI Agents",
+      "Vector Embeddings",
+      "Prompt Engineering",
+      "Spring AI",
+      "LangChain",
+      "MCP",
+    ],
+  },
+  { label: "data", items: ["PostgreSQL", "Azure SQL", "MongoDB", "Redis", "Kafka", "Elasticsearch"] },
+  { label: "cloud", items: ["Azure", "Docker", "Kubernetes", "Terraform", "CI/CD"] },
+  { label: "practices", items: ["System Design", "Design Patterns", "Secure Coding", "SDLC", "Agile"] },
 ] as const;
+
+export const skillsData = skillGroups.flatMap((g) => g.items);

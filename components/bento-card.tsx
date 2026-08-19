@@ -49,7 +49,7 @@ export default function BentoCard({
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
           background:
-            "radial-gradient(320px circle at var(--mx,50%) var(--my,50%), rgba(198,245,60,0.07), transparent 62%)",
+            "radial-gradient(320px circle at var(--mx,50%) var(--my,50%), rgba(var(--accent-rgb),0.07), transparent 62%)",
         }}
       />
       <div className="relative flex h-full flex-col justify-between gap-4">
@@ -70,13 +70,15 @@ export default function BentoCard({
 
   if (!href) return body;
 
+  // The anchor becomes the grid item, so it has to carry the caller's layout
+  // classes too — otherwise every linked card collapses to a single column.
   return (
     <a
       href={href}
       download={download}
       target={external ? "_blank" : undefined}
       rel={external ? "noreferrer" : undefined}
-      className="block h-full rounded-2xl"
+      className={clsx("block h-full rounded-2xl", className)}
     >
       {body}
     </a>

@@ -14,7 +14,11 @@
   --color-text: #e9eae6;
   --color-muted: #8a8f88;
   --color-dim: #5a5f59;
-  --color-accent: #c6f53c;
+  /* Single source of truth for the accent. Change both lines together — the
+     triple is what rgba() overlays and the canvas dot field read, since
+     neither can derive channels from a hex value. */
+  --color-accent: #4c9ef5;
+  --accent-rgb: 76, 158, 245;
 
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -47,6 +51,161 @@
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
+  }
+}
+
+/* Loader sweep. Each cell carries its own --t (0-1 along the diagonal) and
+   converts it to an animation-delay, so the whole diagonal wave runs in CSS.
+   Doing it in React would mean re-rendering several hundred cells on every
+   frame just to move a band across them. */
+@keyframes loader-sweep {
+  0% {
+    color: rgba(233, 234, 230, 0.07);
+    text-shadow: none;
+  }
+  20% {
+    color: rgb(var(--accent-rgb));
+    text-shadow: 0 0 12px rgba(var(--accent-rgb), 0.6);
+  }
+  100% {
+    color: rgba(233, 234, 230, 0.28);
+    text-shadow: none;
+  }
+}
+
+/* Code symbols drifting down-left through the hero's empty top-right corner.
+   Travel points back toward the headline, so the motion leads the eye into
+   the content rather than away from it. Pure CSS: no per-frame JS. */
+/* Travel distance comes from per-tier custom properties, so nearer symbols
+   cross more ground than distant ones in the same pass — parallax rather than
+   a flat sheet of everything moving alike. */
+@keyframes meteor-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.94);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate3d(var(--mx, -190px), var(--my, 235px), 0) scale(1.02);
+    opacity: 0;
+  }
+}
+
+.meteor {
+  position: absolute;
+  animation: meteor-drift linear infinite both;
+  will-change: transform, opacity;
+  /* Bloom on the head, so the symbol reads as the bright end of the streak. */
+  text-shadow: 0 0 10px currentColor;
+}
+
+/* The trail extends up-right, back along the direction of travel. Tapered
+   with a mid stop and softened with a slight blur so it reads as a streak
+   rather than a drawn line. */
+.meteor::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: var(--trail, 62px);
+  height: 1.5px;
+  border-radius: 999px;
+  transform-origin: left center;
+  transform: rotate(-51deg);
+  background: linear-gradient(
+    to right,
+    currentColor 0%,
+    color-mix(in srgb, currentColor 45%, transparent) 40%,
+    transparent 100%
+  );
+  opacity: 0.85;
+  filter: blur(0.7px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meteor {
+    display: none;
+  }
+}
+
+/* Swap copy by input type rather than by user agent. Done in CSS so it stays
+   correct after hydration and on hybrid devices, where a JS check made once at
+   mount would be wrong the moment someone picks up a stylus or docks a mouse. */
+.hover-only {
+  display: none;
+}
+.touch-only {
+  display: inline;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hover-only {
+    display: inline;
+  }
+  .touch-only {
+    display: none;
+  }
+}
+
+/* Skills section's code-file cursor. */
+@keyframes cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Skills marquee. Each row's track is the skill list rendered twice back to
+   back; scrolling exactly -50% moves through one full copy and lands back on
+   an identical frame, so the loop has no visible seam. */
+@keyframes skill-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.skill-marquee-row {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.skill-marquee-track {
+  animation-name: skill-marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Pausing on hover/focus is the accessibility mitigation for auto-scrolling
+   text: it stays ambient at a glance but becomes readable the moment
+   someone actually tries to read it, without needing a separate control. */
+.skill-marquee-row:hover .skill-marquee-track,
+.skill-marquee-row:focus-within .skill-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-hint {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(7px);
+    opacity: 1;
   }
 }
 
