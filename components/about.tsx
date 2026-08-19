@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import pPic from "@/public/profile.jpg";
+import AboutTerminal from "./about-terminal";
 import BentoCard from "./bento-card";
 import SectionHeading from "./section-heading";
 import { useSectionInView } from "@/lib/hooks";
@@ -42,10 +43,15 @@ export default function About() {
 
   return (
     <section ref={ref} id="about" className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-12 pb-24 sm:px-10">
-      <SectionHeading eyebrow="01 / About">Client call to production</SectionHeading>
+      <SectionHeading eyebrow="01 / About">Backend, Mobile, AI. One Engineer.</SectionHeading>
 
       <motion.div
-        className="grid grid-cols-1 gap-3 sm:grid-cols-4 lg:grid-cols-6"
+        // grid-flow-dense: with two row-span-2 cards side by side (the photo
+        // and the terminal below), sparse auto-placement pushes the
+        // full-width Impact row down and leaves a real gap next to the
+        // terminal for the row before it — dense backfills that gap with the
+        // next card that fits instead of leaving it empty.
+        className="grid grid-cols-1 gap-3 sm:grid-cols-4 lg:grid-cols-6 lg:grid-flow-dense"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.15 }}
@@ -80,16 +86,9 @@ export default function About() {
           </div>
         </BentoCard>
 
-        <BentoCard className="min-h-40 sm:col-span-2 lg:col-span-2" label="Currently">
-          <div>
-            <div className="text-[0.95rem] font-medium text-text">Full Stack Engineer</div>
-            <div className="mt-1.5 text-[0.86rem] leading-relaxed text-muted">
-              Web Synergies India
-              <span className="text-dim"> — a Yokogawa company</span>
-            </div>
-            <div className="label-mono mt-3 text-accent">Aug 2024 — Present</div>
-          </div>
-        </BentoCard>
+        <div className="sm:col-span-2 lg:col-span-2 lg:row-span-2">
+          <AboutTerminal />
+        </div>
 
         <BentoCard
           className="min-h-40 sm:col-span-2 lg:col-span-2"
@@ -98,7 +97,7 @@ export default function About() {
           download
         >
           <p className="text-[0.94rem] leading-relaxed text-muted">
-            Full history, skills and metrics — one page, as a PDF.
+            Experience, skills, projects, and achievements — all in one place.
           </p>
         </BentoCard>
 
