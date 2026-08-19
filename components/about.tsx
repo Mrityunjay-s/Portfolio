@@ -41,7 +41,7 @@ export default function About() {
   const { ref } = useSectionInView("About", 0.25);
 
   return (
-    <section ref={ref} id="about" className="mx-auto w-full max-w-350 scroll-mt-28 px-5 py-24 sm:px-10">
+    <section ref={ref} id="about" className="mx-auto w-full max-w-350 scroll-mt-24 px-5 pt-14 pb-24 sm:px-10">
       <SectionHeading eyebrow="01 / About">Client call to production</SectionHeading>
 
       <motion.div
