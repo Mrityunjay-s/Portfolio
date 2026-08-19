@@ -8,6 +8,7 @@ import { links } from "@/lib/data";
 import { useActiveSectionContext } from "@/context/active-section-context";
 import { useLoaderContext } from "@/context/loader-context";
 import { handleHashNavClick } from "@/lib/hooks";
+import ThemeToggle from "./theme-toggle";
 
 export default function Header() {
   const { activeSection, setActiveSection, setTimeOfLastClick } = useActiveSectionContext();
@@ -70,6 +71,8 @@ export default function Header() {
             ))}
           </ul>
         </nav>
+
+        <ThemeToggle />
       </div>
     </motion.header>
   );

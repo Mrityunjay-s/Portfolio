@@ -3,24 +3,73 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Dark-committed palette. The accent is the only saturated colour in the
-     system — change --color-accent alone to reskin the whole site. */
-  --color-ink: #08090a;
-  --color-surface: #101214;
-  --color-surface-2: #16191c;
-  --color-surface-3: #1d2125;
-  --color-line: #23272b;
-  --color-line-soft: #191d20;
-  --color-text: #e9eae6;
-  --color-muted: #8a8f88;
-  --color-dim: #5a5f59;
+  /* Tokens only — values live below in :root / [data-theme="light"] so both
+     themes can override them. Tailwind's @theme block still has to declare
+     each name once for the bg-ink / text-muted / etc. utilities to exist. */
+  --color-ink: var(--c-ink);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-surface-3: var(--c-surface-3);
+  --color-line: var(--c-line);
+  --color-line-soft: var(--c-line-soft);
+  --color-text: var(--c-text);
+  --color-muted: var(--c-muted);
+  --color-dim: var(--c-dim);
+  --color-accent: var(--c-accent);
+  --color-code: var(--c-code);
+
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Dark is the default — no data-theme attribute needed — so a visitor whose
+   preference hasn't loaded yet (or who has JS disabled) still gets the
+   site's actual identity rather than a generic fallback. Explicit
+   [data-theme="light"] is the only way out of it; there is no
+   prefers-color-scheme branch; this is a deliberate on/off choice via the
+   toggle, not a system-matched theme. */
+:root {
+  --c-ink: #08090a;
+  --c-surface: #101214;
+  --c-surface-2: #16191c;
+  --c-surface-3: #1d2125;
+  --c-line: #23272b;
+  --c-line-soft: #191d20;
+  --c-text: #e9eae6;
+  --c-muted: #8a8f88;
+  --c-dim: #5a5f59;
   /* Single source of truth for the accent. Change both lines together — the
      triple is what rgba() overlays and the canvas dot field read, since
      neither can derive channels from a hex value. */
-  --color-accent: #4c9ef5;
+  --c-accent: #4c9ef5;
   --accent-rgb: 76, 158, 245;
+  /* Reads the same way as --accent-rgb (dot-field.tsx, page-loader.tsx) for
+     the neutral dot/symbol colour, which also has to flip per theme. */
+  --dot-rgb: 190, 193, 183;
+  /* The About/Skills "code editor" chrome's own background — one shade off
+     the general surface tokens so it still reads as its own window. */
+  --c-code: #0c0d0f;
+}
 
-  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+:root[data-theme="light"] {
+  /* Cool-biased neutrals, not pure grey/white — mirrors how the dark palette
+     avoids pure black, just in the other direction, so the two themes read
+     as one considered system rather than an inverted default. */
+  --c-ink: #f5f7fa;
+  --c-surface: #ffffff;
+  --c-surface-2: #eef1f4;
+  --c-surface-3: #e4e8ed;
+  --c-line: #dce1e7;
+  --c-line-soft: #e9ecf0;
+  --c-text: #12161b;
+  --c-muted: #565d66;
+  --c-dim: #89929c;
+  /* Deepened from the dark theme's #4c9ef5 — that blue is legible for large
+     UI on white but too low-contrast for the small skill-name text in the
+     marquee chips and the terminal cards. */
+  --c-accent: #1d6fdb;
+  --accent-rgb: 29, 111, 219;
+  --dot-rgb: 60, 66, 76;
+  --c-code: #ffffff;
 }
 
 @layer base {
@@ -41,11 +90,12 @@
     background-color: var(--color-ink);
     color: var(--color-text);
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   ::selection {
     background-color: var(--color-accent);
-    color: #06070a;
+    color: var(--color-ink);
   }
 
   :focus-visible {
@@ -60,7 +110,7 @@
    frame just to move a band across them. */
 @keyframes loader-sweep {
   0% {
-    color: rgba(233, 234, 230, 0.07);
+    color: rgba(var(--dot-rgb), 0.07);
     text-shadow: none;
   }
   20% {
@@ -68,7 +118,7 @@
     text-shadow: 0 0 12px rgba(var(--accent-rgb), 0.6);
   }
   100% {
-    color: rgba(233, 234, 230, 0.28);
+    color: rgba(var(--dot-rgb), 0.28);
     text-shadow: none;
   }
 }

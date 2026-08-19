@@ -20,7 +20,7 @@ export default function AboutTerminal() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-[#0c0d0f]">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-code">
       <div className="flex items-center gap-2 border-b border-line bg-surface px-3.5 py-2.5">
         <span className="h-2.5 w-2.5 rounded-full bg-line" />
         <span className="h-2.5 w-2.5 rounded-full bg-line" />

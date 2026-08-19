@@ -12,17 +12,14 @@ type Dot = {
   ph: number;
 };
 
-const BASE = "190,193,183";
-
-// Canvas cannot use CSS tokens directly, so read the accent triple off the
-// document. Keeps the field in step with --accent-rgb instead of duplicating
-// the colour here and letting the two drift apart.
-function readAccent() {
-  if (typeof window === "undefined") return "198,245,60";
-  const v = getComputedStyle(document.documentElement)
-    .getPropertyValue("--accent-rgb")
-    .trim();
-  return v || "198,245,60";
+// Canvas cannot use CSS tokens directly, so both colours are read off the
+// document rather than hardcoded — keeps the field in step with the current
+// theme's --accent-rgb / --dot-rgb instead of duplicating them here and
+// letting canvas and CSS drift apart across a light/dark toggle.
+function readVar(name: string, fallback: string) {
+  if (typeof window === "undefined") return fallback;
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v || fallback;
 }
 
 // Shape of the projected surface, in world space before perspective.
@@ -45,7 +42,18 @@ export default function DotField() {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasHover = window.matchMedia("(hover: hover)").matches;
-    const ACCENT = readAccent();
+    // let, not const: the theme toggle flips document.documentElement's
+    // data-theme attribute after this canvas has already mounted, so a
+    // MutationObserver below re-reads both on change rather than baking in
+    // whatever theme happened to be active at mount.
+    let ACCENT = readVar("--accent-rgb", "76,158,245");
+    let DOT = readVar("--dot-rgb", "190,193,183");
+
+    const themeObserver = new MutationObserver(() => {
+      ACCENT = readVar("--accent-rgb", "76,158,245");
+      DOT = readVar("--dot-rgb", "190,193,183");
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     let W = 0;
     let H = 0;
@@ -201,13 +209,13 @@ export default function DotField() {
           ctx!.arc(px, py, rad, 0, 6.2832);
           ctx!.fill();
           if (g < 1) {
-            ctx!.fillStyle = `rgba(${BASE},${(alpha * (1 - g) * 0.9).toFixed(3)})`;
+            ctx!.fillStyle = `rgba(${DOT},${(alpha * (1 - g) * 0.9).toFixed(3)})`;
             ctx!.beginPath();
             ctx!.arc(px, py, rad * 0.9, 0, 6.2832);
             ctx!.fill();
           }
         } else {
-          ctx!.fillStyle = `rgba(${BASE},${alpha.toFixed(3)})`;
+          ctx!.fillStyle = `rgba(${DOT},${alpha.toFixed(3)})`;
           ctx!.beginPath();
           ctx!.arc(px, py, rad, 0, 6.2832);
           ctx!.fill();
@@ -260,6 +268,7 @@ export default function DotField() {
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(resizeTimer);
+      themeObserver.disconnect();
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("pointerdown", onPointer);
       document.removeEventListener("pointerleave", onLeave);
