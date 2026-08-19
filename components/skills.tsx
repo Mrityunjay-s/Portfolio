@@ -7,21 +7,22 @@ import { skillsData } from "@/lib/data";
 import { useSectionInView } from "@/lib/hooks";
 
 // Skills Mrityunjay leads with, highlighted so the list has a hierarchy
-// instead of reading as one flat wall of equal-weight tags.
+// instead of reading as one flat wall of equal-weight tags. Matches what the
+// About bio calls out by name.
 const PRIMARY = new Set([
+  "Java",
+  "Spring Boot",
   "Kotlin",
   "React Native",
-  "Spring Boot",
-  "Jetpack Compose",
-  "Java",
-  "TypeScript",
+  "Azure AI Foundry",
+  "RAG",
 ]);
 
 export default function Skills() {
   const { ref } = useSectionInView("Skills", 0.25);
 
   return (
-    <section ref={ref} id="skills" className="mx-auto w-full max-w-350 scroll-mt-24 px-5 pt-14 pb-24 sm:px-10">
+    <section ref={ref} id="skills" className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-14 pb-24 sm:px-10">
       <SectionHeading eyebrow="02 / Skills">What I reach for</SectionHeading>
 
       <ul className="flex flex-wrap gap-2">
