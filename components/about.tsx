@@ -23,11 +23,18 @@ const IMPACT = [
 // wonder about (databases).
 const STACK = [
   { area: "Languages", items: "Java · Kotlin · Go · Python · TypeScript · SQL" },
-  { area: "Backend", items: "Spring Boot · FastAPI · Microservices · REST · GraphQL · gRPC" },
+  {
+    area: "Backend",
+    items: "Spring Boot · Spring Security · FastAPI · Microservices · Event-driven · REST · GraphQL · gRPC",
+  },
   { area: "Mobile", items: "React Native · Android (Kotlin) · iOS (Swift)" },
-  { area: "AI", items: "Azure AI Foundry · Azure OpenAI · RAG · AI agents · Spring AI" },
-  { area: "Data", items: "PostgreSQL · MongoDB · Redis · Kafka · Elasticsearch" },
+  {
+    area: "AI",
+    items: "Azure AI Foundry · Azure OpenAI · RAG · AI agents · Vector embeddings · Spring AI",
+  },
+  { area: "Data", items: "PostgreSQL · Azure SQL · MongoDB · Redis · Kafka · Elasticsearch" },
   { area: "Cloud", items: "Azure · Docker · Kubernetes · CI/CD" },
+  { area: "Practices", items: "System design · Design patterns · Secure coding · SDLC · Agile" },
 ];
 
 export default function About() {
@@ -66,7 +73,7 @@ export default function About() {
             sizes="(max-width: 640px) 100vw, 33vw"
             className="absolute inset-0 h-full w-full object-cover object-[50%_22%] opacity-70 grayscale transition duration-500 group-hover:opacity-90 group-hover:grayscale-0"
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-ink via-ink/20 to-transparent" />
           <div className="relative mt-auto p-5">
             <div className="label-mono text-dim">Bengaluru, India</div>
             <div className="mt-1 text-[0.95rem] font-medium">Mrityunjay Singh</div>
