@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { links } from "@/lib/data";
 import { useActiveSectionContext } from "@/context/active-section-context";
 import { useLoaderContext } from "@/context/loader-context";
+import { handleHashNavClick } from "@/lib/hooks";
 
 export default function Header() {
   const { activeSection, setActiveSection, setTimeOfLastClick } = useActiveSectionContext();
@@ -28,10 +29,12 @@ export default function Header() {
             width — at 375px the two together overflow the viewport. */}
         <Link
           href="#home"
-          onClick={() => {
-            setActiveSection("Home");
-            setTimeOfLastClick(Date.now());
-          }}
+          onClick={(e) =>
+            handleHashNavClick(e, "#home", () => {
+              setActiveSection("Home");
+              setTimeOfLastClick(Date.now());
+            })
+          }
           className="hidden text-[0.95rem] font-medium tracking-[-0.015em] whitespace-nowrap text-text sm:block"
         >
           Mrityunjay Singh<span className="text-accent">.</span>
@@ -43,10 +46,12 @@ export default function Header() {
               <li key={link.hash}>
                 <Link
                   href={link.hash}
-                  onClick={() => {
-                    setActiveSection(link.name);
-                    setTimeOfLastClick(Date.now());
-                  }}
+                  onClick={(e) =>
+                    handleHashNavClick(e, link.hash, () => {
+                      setActiveSection(link.name);
+                      setTimeOfLastClick(Date.now());
+                    })
+                  }
                   className={clsx(
                     "relative flex items-center rounded-full px-2.5 py-1.5 text-[0.72rem] whitespace-nowrap transition-colors sm:px-4 sm:text-[0.82rem]",
                     activeSection === link.name ? "text-ink" : "text-muted hover:text-text"

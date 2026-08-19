@@ -8,7 +8,7 @@ import { HiDownload } from "react-icons/hi";
 import { FaGithub } from "react-icons/fa";
 import DotField from "./dot-field";
 import HeroMeteors from "./hero-meteors";
-import { useSectionInView } from "@/lib/hooks";
+import { handleHashNavClick, useSectionInView } from "@/lib/hooks";
 import { useActiveSectionContext } from "@/context/active-section-context";
 import { useLoaderContext } from "@/context/loader-context";
 
@@ -119,10 +119,12 @@ export default function Hero() {
         >
           <Link
             href="#contact"
-            onClick={() => {
-              setActiveSection("Contact");
-              setTimeOfLastClick(Date.now());
-            }}
+            onClick={(e) =>
+              handleHashNavClick(e, "#contact", () => {
+                setActiveSection("Contact");
+                setTimeOfLastClick(Date.now());
+              })
+            }
             className="group flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-ink transition hover:brightness-110 active:scale-[0.98]"
           >
             Start a project

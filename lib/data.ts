@@ -20,7 +20,9 @@ export const links = [
     hash: "#skills",
   },
   {
-    name: "Projects",
+    name: "Work",
+    // Points at Projects' actual id="projects" — the label was renamed to
+    // "Work" but the section's DOM id was not, and the two need not match.
     hash: "#projects",
   },
   // {
@@ -32,6 +34,12 @@ export const links = [
     hash: "#contact",
   },
 ] as const;
+
+// Reverse lookup for syncing the URL to whatever section is active — the
+// scroll-driven observer only ever knows a SectionName, never the hash.
+export const sectionHash: Record<string, string> = Object.fromEntries(
+  links.map((l) => [l.name, l.hash])
+);
 
 // export const experiencesData = [
 //   {
