@@ -2,32 +2,29 @@
 
 import React from "react";
 import SectionHeading from "./section-heading";
-import Project, { ProjectSlot } from "./project";
+import Project from "./project";
 import { projectsData } from "@/lib/data";
 import { useSectionInView } from "@/lib/hooks";
 
-// Keep the grid at four tiles so it stays composed while the last two
-// projects are still being written up.
-const TARGET_TILES = 4;
-
 export function Projects() {
   const { ref } = useSectionInView("Work", 0.2);
-  const slots = Math.max(0, TARGET_TILES - projectsData.length);
 
   return (
-    <section
-      ref={ref}
-      id="work"
-      className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-14 pb-24 sm:px-10"
-    >
-      <SectionHeading eyebrow="03 / Work">Things I&apos;ve shipped</SectionHeading>
+    <section ref={ref} id="work" className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-14 pb-24 sm:px-10">
+      <SectionHeading eyebrow="03 / Work">git log --oneline --graph</SectionHeading>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      {/* A log, not a grid — no empty "slot" placeholders needed here the way
+          a 2-up card grid needed them: a shorter list still reads as
+          intentional in this format, the way a real git log isn't padded
+          out with blank commits while a project is still in progress. */}
+      <div>
         {projectsData.map((project, index) => (
-          <Project key={project.title} {...project} index={index} />
-        ))}
-        {Array.from({ length: slots }, (_, i) => (
-          <ProjectSlot key={`slot-${i}`} n={projectsData.length + i + 1} />
+          <Project
+            key={project.hash}
+            {...project}
+            index={index}
+            isLast={index === projectsData.length - 1}
+          />
         ))}
       </div>
     </section>
