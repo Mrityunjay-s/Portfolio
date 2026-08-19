@@ -13,7 +13,7 @@ const ROWS: Row[] = [
   { prompt: "whoami", text: "mrityunjay-singh" },
   { prompt: "cat status", text: "Full Stack Engineer, Bengaluru" },
   { text: "open to work", muted: true },
-  { prompt: "uptime", text: "2y · 99.9% clean deploys" },
+  { prompt: "uptime", text: "2y · 99.8% clean deploys" },
 ];
 
 export default function AboutTerminal() {

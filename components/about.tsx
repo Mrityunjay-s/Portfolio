@@ -12,10 +12,26 @@ import { useSectionInView } from "@/lib/hooks";
 // Quantified outcomes carry more weight with recruiters and clients than any
 // adjective, so they get their own row rather than being buried in prose.
 const IMPACT = [
-  { value: "24%", label: "Faster API responses", detail: "Spring Security, JWT, RBAC" },
-  { value: "72%", label: "Higher throughput", detail: "SQL tuning + Redis caching" },
-  { value: "1,000+", label: "Active users", detail: "2 cross-platform apps shipped" },
-  { value: "70%", label: "Less doc search time", detail: "RAG over 10,000+ documents" },
+  {
+    value: "24%",
+    label: "Faster API responses",
+    detail: "Spring Security, JWT, RBAC",
+  },
+  {
+    value: "72%",
+    label: "Higher throughput",
+    detail: "SQL tuning + Redis caching",
+  },
+  {
+    value: "1,000+",
+    label: "Active users",
+    detail: "2 cross-platform apps shipped",
+  },
+  {
+    value: "70%",
+    label: "Less doc search time",
+    detail: "RAG over 10,000+ documents",
+  },
 ];
 
 // The headline, not the inventory. This was seven rows of comma-strings —
@@ -26,8 +42,11 @@ const IMPACT = [
 // a glance without repeating the same list a second time.
 const STACK = [
   { area: "Languages", items: ["Java", "Kotlin", "Python", "Go"] },
-  { area: "Backend", items: ["Spring Boot", "Microservices", "Kafka", "PostgreSQL"] },
-  { area: "Mobile", items: ["React Native", "Swift"] },
+  {
+    area: "Backend",
+    items: ["Spring Boot", "Microservices", "Kafka", "PostgreSQL"],
+  },
+  { area: "Mobile", items: ["React Native", "Swift", "Android"] },
   { area: "AI", items: ["Azure AI Foundry", "RAG", "LangChain", "MCP"] },
   { area: "Cloud", items: ["Docker", "Kubernetes", "Terraform"] },
 ];
@@ -36,8 +55,14 @@ export default function About() {
   const { ref } = useSectionInView("About", 0.25);
 
   return (
-    <section ref={ref} id="about" className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-12 pb-24 sm:px-10">
-      <SectionHeading eyebrow="01 / About">Backend, Mobile, AI. One Engineer.</SectionHeading>
+    <section
+      ref={ref}
+      id="about"
+      className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-12 pb-24 sm:px-10"
+    >
+      <SectionHeading eyebrow="01 / About">
+        Backend, Mobile, AI. One Engineer.
+      </SectionHeading>
 
       <motion.div
         // grid-flow-dense: with two row-span-2 cards side by side (the photo
@@ -51,16 +76,21 @@ export default function About() {
         viewport={{ once: true, amount: 0.15 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        <BentoCard className="min-h-56 sm:col-span-2 lg:col-span-4" label="About">
+        <BentoCard
+          className="min-h-56 sm:col-span-2 lg:col-span-4"
+          label="About"
+        >
           <p className="text-[0.94rem] leading-relaxed text-muted">
             I&apos;m a full stack engineer with{" "}
-            <span className="text-text">two years</span> building secure microservices and REST
-            APIs in <span className="text-text">Java Spring Boot</span>, cross-platform apps in{" "}
-            <span className="text-text">React Native</span> with native Android and iOS modules,
-            and more recently{" "}
-            <span className="text-text">AI agents and RAG pipelines</span> on Azure AI Foundry.
-            I own the whole cycle — sitting in the requirements call, then shipping it to
-            production and keeping it running.
+            <span className="text-text">two years</span> building secure
+            microservices and REST APIs in{" "}
+            <span className="text-text">Java Spring Boot</span>, cross-platform
+            apps in <span className="text-text">React Native</span> with native
+            Android and iOS modules, and more recently{" "}
+            <span className="text-text">AI agents and RAG pipelines</span> on
+            Azure AI Foundry. I own the whole cycle — sitting in the
+            requirements call, then shipping it to production and keeping it
+            running.
           </p>
         </BentoCard>
 
@@ -76,7 +106,9 @@ export default function About() {
           <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-ink via-ink/20 to-transparent" />
           <div className="relative mt-auto p-5">
             <div className="label-mono text-dim">Bengaluru, India</div>
-            <div className="mt-1 text-[0.95rem] font-medium">Mrityunjay Singh</div>
+            <div className="mt-1 text-[0.95rem] font-medium">
+              Mrityunjay Singh
+            </div>
           </div>
         </BentoCard>
 
@@ -95,7 +127,10 @@ export default function About() {
           </p>
         </BentoCard>
 
-        <BentoCard className="sm:col-span-4 lg:col-span-6" label="Selected impact">
+        <BentoCard
+          className="sm:col-span-4 lg:col-span-6"
+          label="Selected impact"
+        >
           <dl className="grid grid-cols-2 gap-x-4 gap-y-6 lg:grid-cols-4">
             {IMPACT.map((s) => (
               <div key={s.label}>
@@ -103,7 +138,9 @@ export default function About() {
                   {s.value}
                 </dt>
                 <dd className="mt-2">
-                  <span className="block text-[0.86rem] font-medium text-text">{s.label}</span>
+                  <span className="block text-[0.86rem] font-medium text-text">
+                    {s.label}
+                  </span>
                   <span className="mt-0.5 block text-[0.78rem] leading-snug text-dim">
                     {s.detail}
                   </span>
@@ -113,11 +150,19 @@ export default function About() {
           </dl>
         </BentoCard>
 
-        <BentoCard className="min-h-44 sm:col-span-2 lg:col-span-4" label="Stack">
+        <BentoCard
+          className="min-h-44 sm:col-span-2 lg:col-span-4"
+          label="Stack"
+        >
           <ul className="flex flex-col gap-3">
             {STACK.map((row) => (
-              <li key={row.area} className="flex flex-col gap-1.5 sm:flex-row sm:items-start sm:gap-4">
-                <span className="label-mono w-20 shrink-0 pt-1 text-dim">{row.area}</span>
+              <li
+                key={row.area}
+                className="flex flex-col gap-1.5 sm:flex-row sm:items-start sm:gap-4"
+              >
+                <span className="label-mono w-20 shrink-0 pt-1 text-dim">
+                  {row.area}
+                </span>
                 <div className="flex flex-wrap gap-1.5">
                   {row.items.map((item) => (
                     <span
@@ -133,17 +178,24 @@ export default function About() {
           </ul>
         </BentoCard>
 
-        <BentoCard className="min-h-44 sm:col-span-2 lg:col-span-2" label="Education">
+        <BentoCard
+          className="min-h-44 sm:col-span-2 lg:col-span-2"
+          label="Education"
+        >
           <div className="flex flex-col gap-2">
             <div>
-              <div className="text-[0.88rem] font-medium text-text">Bachelors - Computer Science</div>
+              <div className="text-[0.88rem] font-medium text-text">
+                Bachelors - Computer Science
+              </div>
               {/* <div className="mt-0.5 text-[0.8rem] leading-snug text-dim">
                 Priyadarshini J L College of Engineering, Nagpur
               </div> */}
               <div className="label-mono mt-1.5 text-dim">2021 — 2024</div>
             </div>
             <div>
-              <div className="text-[0.88rem] font-medium text-text">Diploma -Computer Technology</div>
+              <div className="text-[0.88rem] font-medium text-text">
+                Diploma -Computer Technology
+              </div>
               {/* <div className="mt-0.5 text-[0.8rem] leading-snug text-dim">
                 Priyadarshini Polytechnic, Nagpur
               </div> */}

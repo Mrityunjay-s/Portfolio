@@ -151,7 +151,7 @@ export default function Hero() {
           </a>
 
           <a
-            href="https://github.com/Mrityunjaysingh-1"
+            href="https://github.com/Mrityunjay-s"
             target="_blank"
             rel="noreferrer"
             aria-label="GitHub"
