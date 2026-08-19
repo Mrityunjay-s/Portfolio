@@ -23,12 +23,10 @@ export default function HomeShell({ children }: { children: React.ReactNode }) {
       // Much below this it stops reading as a page zooming in and starts
       // reading as a small page that happens to grow.
       animate={isWaiting ? { scale: 0.60 } : { scale: 1 }}
-      // Matches the panel's 0.8s exit. Note: this removes the lag that was the
-      // parallax — the zoom now lands at the same instant the panel clears
-      // instead of trailing behind it. Still reads as a zoom, just not as a
-      // hand-off with depth. Push back above 0.8s to restore that trailing
-      // effect if it's missed.
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      // Slower than the panel's 0.8s exit, so the zoom is still settling after
+      // the panel has gone. That lag is the parallax, and it is also the last
+      // thing on screen — so it, not the panel, sets the perceived duration.
+      transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>

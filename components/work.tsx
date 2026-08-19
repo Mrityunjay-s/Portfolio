@@ -11,14 +11,14 @@ import { useSectionInView } from "@/lib/hooks";
 const TARGET_TILES = 4;
 
 export function Projects() {
-  const { ref } = useSectionInView("Projects", 0.2);
+  const { ref } = useSectionInView("Work", 0.2);
   const slots = Math.max(0, TARGET_TILES - projectsData.length);
 
   return (
     <section
       ref={ref}
-      id="projects"
-      className="mx-auto w-full max-w-350 scroll-mt-24 px-5 pt-14 pb-24 sm:px-10"
+      id="work"
+      className="mx-auto w-full max-w-350 scroll-mt-14 px-5 pt-14 pb-24 sm:px-10"
     >
       <SectionHeading eyebrow="03 / Work">Things I&apos;ve shipped</SectionHeading>
 

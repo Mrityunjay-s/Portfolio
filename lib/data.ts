@@ -21,9 +21,7 @@ export const links = [
   },
   {
     name: "Work",
-    // Points at Projects' actual id="projects" — the label was renamed to
-    // "Work" but the section's DOM id was not, and the two need not match.
-    hash: "#projects",
+    hash: "#work",
   },
   // {
   //   name: "Experience",
