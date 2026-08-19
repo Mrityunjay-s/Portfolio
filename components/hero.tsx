@@ -85,14 +85,14 @@ export default function Hero() {
 
       <div className="pointer-events-none relative z-10 mx-auto w-full max-w-350 px-5 pb-16 pt-32 sm:px-10">
         <motion.p
-          className="label-mono mb-5 text-dim"
+          className="label-mono mb-5 text-amber-200"
           variants={rise}
           initial="initial"
           animate={shouldAnimate ? "animate" : "initial"}
           custom={0}
         >
           <span className="text-accent">{"/// "}</span>
-          Full Stack Engineer <span className="text-accent">&mdash;</span> Spring Boot <span className="text-accent">&middot;</span> React Native <span className="text-accent">&middot;</span> Azure AI
+          Full Stack Engineer <span className="text-accent">&mdash;</span> Spring Boot <span className="text-accent">&middot;</span> React Native <span className="text-accent">&middot;</span> AI
         </motion.p>
 
         <motion.h1

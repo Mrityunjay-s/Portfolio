@@ -22,7 +22,7 @@ export default function HomeShell({ children }: { children: React.ReactNode }) {
       // while it is small reads as depth against the same near-black ground.
       // Much below this it stops reading as a page zooming in and starts
       // reading as a small page that happens to grow.
-      animate={isWaiting ? { scale: 0.55 } : { scale: 1 }}
+      animate={isWaiting ? { scale: 0.60 } : { scale: 1 }}
       // Slower than the panel's 1.05s exit, so the zoom is still settling
       // after the panel has gone. That lag is the parallax.
       transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
