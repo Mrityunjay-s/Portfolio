@@ -9,6 +9,7 @@ import { FaGithub } from "react-icons/fa";
 import DotField from "./dot-field";
 import { useSectionInView } from "@/lib/hooks";
 import { useActiveSectionContext } from "@/context/active-section-context";
+import { useLoaderContext } from "@/context/loader-context";
 
 const rise = {
   initial: { opacity: 0, y: 26 },
@@ -22,6 +23,8 @@ const rise = {
 export default function Hero() {
   const { ref } = useSectionInView("Home", 0.4);
   const { setActiveSection, setTimeOfLastClick } = useActiveSectionContext();
+  const { isLoaded, hasChecked } = useLoaderContext();
+  const shouldAnimate = hasChecked && isLoaded;
 
   return (
     <section
@@ -36,7 +39,7 @@ export default function Hero() {
           className="label-mono mb-5 text-amber-100"
           variants={rise}
           initial="initial"
-          animate="animate"
+          animate={shouldAnimate ? "animate" : "initial"}
           custom={0}
         >
           {"/// "}Mobile Developer &mdash; React Native &middot; Kotlin &middot; Spring Boot
@@ -46,7 +49,7 @@ export default function Hero() {
           className="max-w-[15ch] text-[clamp(2.4rem,8.4vw,7.9rem)] font-[760] leading-[0.9] tracking-[-0.042em] text-balance"
           variants={rise}
           initial="initial"
-          animate="animate"
+          animate={shouldAnimate ? "animate" : "initial"}
           custom={1}
         >
           <span className="block">I build what happens</span>
@@ -61,7 +64,7 @@ export default function Hero() {
           className="pointer-events-auto mt-10 flex flex-wrap items-center gap-2.5"
           variants={rise}
           initial="initial"
-          animate="animate"
+          animate={shouldAnimate ? "animate" : "initial"}
           custom={2}
         >
           <Link
@@ -110,7 +113,7 @@ export default function Hero() {
           className="label-mono mt-9 text-dim"
           variants={rise}
           initial="initial"
-          animate="animate"
+          animate={shouldAnimate ? "animate" : "initial"}
           custom={3}
         >
           Move your cursor

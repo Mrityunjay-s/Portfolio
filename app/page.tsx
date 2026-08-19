@@ -3,15 +3,18 @@ import About from "@/components/about";
 import Skills from "@/components/skills";
 import { Projects } from "@/components/projects";
 import Contact from "@/components/contact";
+import HomeShell from "@/components/home-shell";
 
 export default function Home() {
   return (
-    <main>
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Contact />
-    </main>
+    <HomeShell>
+      <main>
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Contact />
+      </main>
+    </HomeShell>
   );
 }

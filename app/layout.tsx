@@ -3,7 +3,9 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import LoaderGate from "@/components/loader-gate";
 import ActiveSectionContextProvider from "@/context/active-section-context";
+import { LoaderContextProvider } from "@/context/loader-context";
 import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -20,9 +22,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
       <body className={`${inter.className} bg-ink text-text`}>
         <ActiveSectionContextProvider>
-          <Header />
-          {children}
-          <Footer />
+          <LoaderContextProvider>
+            <LoaderGate />
+            <Header />
+            {children}
+            <Footer />
+          </LoaderContextProvider>
           <Toaster
             position="top-right"
             toastOptions={{
