@@ -42,14 +42,13 @@ export default function LoaderGate() {
       return;
     }
 
-    // In production the loader is a first impression, not something to sit
-    // through on every navigation, so it runs once per tab session. In
-    // development that gate just hides the thing you are working on, so a
-    // reload always replays it.
-    const replay = flag !== null || process.env.NODE_ENV === "development";
+    // Once per tab, in every environment. sessionStorage is scoped to the tab,
+    // so a fresh tab replays it while a reload in the same tab does not — the
+    // loader stays a first impression rather than a toll on every refresh.
+    // Append ?loader to force it without opening a new tab.
     const seen = sessionStorage.getItem("portfolio-loader-seen");
 
-    if (!replay && seen) {
+    if (flag === null && seen) {
       completeLoading();
       return;
     }
