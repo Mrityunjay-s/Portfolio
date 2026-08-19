@@ -45,11 +45,20 @@ export default function Project({
         <span className="relative z-10 mt-1.5 h-2.5 w-2.5 rounded-full bg-accent ring-4 ring-ink" />
       </div>
 
-      <div>
-        <div className="flex flex-wrap items-baseline gap-2">
-          <span className="font-mono text-[0.72rem] text-accent">{hash}</span>
-          <h3 className="text-[0.98rem] font-semibold tracking-[-0.01em]">{title}</h3>
-          <span className="ml-auto font-mono text-[0.68rem] text-dim">{when}</span>
+      <div className="min-w-0">
+        {/* Grid, not flex-wrap + ml-auto: below sm, "when" needs to drop to
+            its own left-aligned line, but ml-auto keeps pushing it to the
+            right edge even after it wraps, leaving it stranded there alone.
+            A single-column grid collapsing to two columns at sm gives the
+            same right-aligned-on-one-line result on wide screens without an
+            orphaned fragment on narrow ones — no breakpoint-specific classes
+            needed on the fragment itself. */}
+        <div className="grid grid-cols-1 items-baseline gap-x-2 gap-y-0.5 sm:grid-cols-[1fr_auto]">
+          <div className="flex flex-wrap items-baseline gap-2 min-w-0">
+            <span className="font-mono text-[0.72rem] text-accent">{hash}</span>
+            <h3 className="text-[0.98rem] font-semibold tracking-[-0.01em] break-words">{title}</h3>
+          </div>
+          <span className="font-mono text-[0.68rem] text-dim">{when}</span>
         </div>
 
         <p className="mt-1.5 max-w-[62ch] text-[0.86rem] leading-relaxed text-muted">
