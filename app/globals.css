@@ -1,10 +1,7 @@
 @import 'tailwindcss';
 
-@custom-variant dark (&:is(.dark *));
-
 @theme {
-  /* Dark-committed palette. The accent is the only saturated colour in the
-     system — change --color-accent alone to reskin the whole site. */
+  /* Dark-committed, single palette — no toggle, no data-theme branch. */
   --color-ink: #08090a;
   --color-surface: #101214;
   --color-surface-2: #16191c;
@@ -19,6 +16,12 @@
      neither can derive channels from a hex value. */
   --color-accent: #4c9ef5;
   --accent-rgb: 76, 158, 245;
+  /* Reads the same way as --accent-rgb (dot-field.tsx, page-loader.tsx) for
+     the neutral dot/symbol colour used in the canvas and the loader sweep. */
+  --dot-rgb: 190, 193, 183;
+  /* The About/Skills "code editor" chrome's own background — one shade off
+     the general surface tokens so it still reads as its own window. */
+  --color-code: #0c0d0f;
 
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -45,7 +48,7 @@
 
   ::selection {
     background-color: var(--color-accent);
-    color: #06070a;
+    color: var(--color-ink);
   }
 
   :focus-visible {
@@ -60,7 +63,7 @@
    frame just to move a band across them. */
 @keyframes loader-sweep {
   0% {
-    color: rgba(233, 234, 230, 0.07);
+    color: rgba(var(--dot-rgb), 0.07);
     text-shadow: none;
   }
   20% {
@@ -68,7 +71,7 @@
     text-shadow: 0 0 12px rgba(var(--accent-rgb), 0.6);
   }
   100% {
-    color: rgba(233, 234, 230, 0.28);
+    color: rgba(var(--dot-rgb), 0.28);
     text-shadow: none;
   }
 }

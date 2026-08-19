@@ -59,7 +59,10 @@ const SymbolField = React.memo(function SymbolField({
           key={i}
           className="flex items-center justify-center"
           style={{
-            color: "rgba(233,234,230,0.07)",
+            // Matches the loader-sweep keyframe's own 0% colour — kept in
+            // step with the same --dot-rgb token dot-field.tsx reads, rather
+            // than a duplicated literal.
+            color: "rgba(var(--dot-rgb), 0.07)",
             animation: `loader-sweep ${SWEEP_DUR}ms linear ${(c.t * SWEEP_SPAN).toFixed(0)}ms both`,
           }}
         >

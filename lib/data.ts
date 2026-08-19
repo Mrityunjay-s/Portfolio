@@ -2,9 +2,6 @@ import React from "react";
 import { CgWorkAlt } from "react-icons/cg";
 import { FaReact } from "react-icons/fa";
 import { LuGraduationCap } from "react-icons/lu";
-import corpcommentImg from "@/public/LoginPage.png";
-import rmtdevImg from "@/public/social1.png";
-// import wordanalyticsImg from "@/public/social2.png";
 
 export const links = [
   {
@@ -58,20 +55,70 @@ export const sectionHash: Record<string, string> = Object.fromEntries(
 //   },
 // ] as const;
 
+// Rendered as a git log: a fake short hash is a stylistic device (matching
+// the terminal chrome already used in About and Skills), never a claim about
+// real commit history. `nodes` is the architecture strip for each entry —
+// [label, isHot] pairs — hot marking the piece of the system doing the most
+// interesting work, not just naming every box.
 export const projectsData = [
   {
-    title: "Socialink (Social Media Application)",
-    description:
-      "Users are able to message one another, upload images, and like the posts and stories of other users..",
-    tags: ["MongoDB", "Express.JS", "React", "Node.JS"],
-    imageUrl: corpcommentImg,
+    hash: "a3f9c2e",
+    when: "current ongoing",
+    title: "Microservices Platform",
+    body: "Architected a production-grade microservices system with event-driven communication via Apache Kafka, synchronous inter-service calls with OpenFeign, service discovery via Eureka, and centralized configuration with Spring Cloud Config.",
+    body2:
+      "End-to-end distributed tracing and observability with Micrometer and Zipkin; integrated Spring AI for LLM-powered features across services.",
+    tags: ["Spring Boot", "Spring Cloud", "Kafka", "OpenFeign", "Eureka", "Spring AI", "Docker"],
+    nodes: [
+      ["Client", false],
+      ["API Gateway", false],
+      ["Services", true],
+      ["Kafka", true],
+      ["Eureka", false],
+      ["Zipkin", false],
+    ],
   },
   {
+    hash: "e17b04d",
+    when: "current ongoing",
+    title: "AI Agent",
+    body: "Designed and built an autonomous AI agent in Python on Microsoft Azure AI Foundry that classifies customer conversations into resolution and escalation workflows using LLM reasoning, cutting manual intervention by 60%.",
+    body2:
+      "RAG pipelines with FastAPI, Azure OpenAI embeddings, and a vector database cut response latency by 30% across 500+ weekly conversations.",
+    tags: ["Python", "FastAPI", "Azure AI Foundry", "Azure OpenAI", "RAG"],
+    nodes: [
+      ["Conversation", false],
+      ["Classifier", true],
+      ["RAG", true],
+      ["Route", false],
+      ["Resolve / Escalate", true],
+    ],
+  },
+  {
+    hash: "9c204b1",
+    when: "personal project",
+    title: "Socialink",
+    body: "Users message one another, upload images, and like the posts and stories of other users.",
+    body2: "",
+    tags: ["MongoDB", "Express.js", "React", "Node.js"],
+    nodes: [
+      ["React", false],
+      ["Express API", false],
+      ["MongoDB", true],
+    ],
+  },
+  {
+    hash: "2d61ff8",
+    when: "personal project",
     title: "Social's",
-    description:
-      "Real-time messaging, which enables sending and receiving instant messages, is the application's core feature.",
-    tags: ["Java", "XML", "Android", "Firebase", "Material Ui"],
-    imageUrl: rmtdevImg,
+    body: "Real-time messaging that enables sending and receiving instant messages is the application's core feature.",
+    body2: "",
+    tags: ["Java", "XML", "Android", "Firebase", "Material UI"],
+    nodes: [
+      ["Android client", false],
+      ["Firebase", true],
+      ["Realtime DB", false],
+    ],
   },
 ] as const;
 

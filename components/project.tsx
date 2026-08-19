@@ -1,62 +1,106 @@
 "use client";
 
-import Image, { type StaticImageData } from "next/image";
 import { motion } from "framer-motion";
 
+type Node = readonly [label: string, hot: boolean];
+
 export type ProjectProps = {
+  hash: string;
+  when: string;
   title: string;
-  description: string;
+  body: string;
+  body2: string;
   tags: readonly string[];
-  imageUrl: StaticImageData;
+  nodes: readonly Node[];
   index: number;
+  isLast: boolean;
 };
 
-export default function Project({ title, description, tags, imageUrl, index }: ProjectProps) {
+export default function Project({
+  hash,
+  when,
+  title,
+  body,
+  body2,
+  tags,
+  nodes,
+  index,
+  isLast,
+}: ProjectProps) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-dim"
+    <motion.div
+      initial={{ opacity: 0, x: -12 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.5, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
+      className={`grid grid-cols-[20px_1fr] gap-3.5 py-5 ${isLast ? "" : "border-b border-line"}`}
     >
-      <div className="relative aspect-16/10 overflow-hidden bg-surface-2">
-        <Image
-          src={imageUrl}
-          alt={`${title} screenshot`}
-          quality={90}
-          placeholder="blur"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="h-full w-full object-cover object-top opacity-80 transition duration-500 group-hover:scale-[1.03] group-hover:opacity-100"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-surface/90 to-transparent" />
+      {/* The rail: a dot per commit, joined by a line to the next one. Real
+          elements rather than a pseudo-element, since its height has to
+          reach the next sibling's dot and CSS can't express "until the next
+          row" without knowing whether there is one — isLast decides that in
+          JS, where the data already does. */}
+      <div className="relative flex justify-center">
+        {!isLast && <span className="absolute top-1 -bottom-5 left-1/2 w-px -translate-x-1/2 bg-line" />}
+        <span className="relative z-10 mt-1.5 h-2.5 w-2.5 rounded-full bg-accent ring-4 ring-ink" />
       </div>
 
-      <div className="flex flex-col gap-3 p-5">
-        <h3 className="text-lg font-semibold tracking-[-0.015em]">{title}</h3>
-        <p className="text-[0.9rem] leading-relaxed text-muted">{description}</p>
-        <ul className="mt-1 flex flex-wrap gap-1.5">
+      <div className="min-w-0">
+        {/* Grid, not flex-wrap + ml-auto: below sm, "when" needs to drop to
+            its own left-aligned line, but ml-auto keeps pushing it to the
+            right edge even after it wraps, leaving it stranded there alone.
+            A single-column grid collapsing to two columns at sm gives the
+            same right-aligned-on-one-line result on wide screens without an
+            orphaned fragment on narrow ones — no breakpoint-specific classes
+            needed on the fragment itself. */}
+        <div className="grid grid-cols-1 items-baseline gap-x-2 gap-y-0.5 sm:grid-cols-[1fr_auto]">
+          <div className="flex flex-wrap items-baseline gap-2 min-w-0">
+            <span className="font-mono text-[0.72rem] text-accent">{hash}</span>
+            <h3 className="text-[0.98rem] font-semibold tracking-[-0.01em] wrap-break-word">{title}</h3>
+          </div>
+          <span className="font-mono text-[0.68rem] text-dim">{when}</span>
+        </div>
+
+        <p className="mt-1.5 max-w-[72ch] text-[0.86rem] leading-relaxed text-muted">
+          {body}
+          {body2 ? ` ${body2}` : ""}
+        </p>
+
+        {/* Architecture strip: the system, not a screenshot of it — for
+            these two resume projects the diagram carries real information
+            (Client -> Services -> Kafka is the actual shape of what was
+            built), which is the whole reason to draw it instead of pasting
+            in a UI screenshot that doesn't exist for a backend system anyway. */}
+        <div className="mt-3 flex items-center gap-1 overflow-x-auto pb-1">
+          {nodes.map(([label, hot], i) => (
+            <span key={label} className="flex shrink-0 items-center gap-1">
+              <span
+                className={
+                  "rounded-md border px-2 py-1 font-mono text-[0.62rem] whitespace-nowrap " +
+                  (hot
+                    ? "border-accent/40 bg-accent/9 text-accent"
+                    : "border-line bg-surface-2 text-muted")
+                }
+              >
+                {label}
+              </span>
+              {i < nodes.length - 1 && <span className="text-[0.7rem] text-dim">&rarr;</span>}
+            </span>
+          ))}
+        </div>
+
+        <ul className="mt-3 flex flex-wrap gap-1.5">
           {tags.map((tag) => (
             <li
               key={tag}
-              className="rounded-md border border-line bg-surface-2 px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.08em] text-dim"
+              className="rounded-md border border-accent/25 bg-accent/8 px-2 py-1 font-mono text-[0.62rem] text-accent"
             >
+              <span className="opacity-70">+ </span>
               {tag}
             </li>
           ))}
         </ul>
       </div>
-    </motion.article>
-  );
-}
-
-export function ProjectSlot({ n }: { n: number }) {
-  return (
-    <div className="flex min-h-52 flex-col items-start justify-end rounded-2xl border border-dashed border-line p-5 text-dim">
-      <div className="label-mono">Slot {n}</div>
-      <p className="mt-2 text-[0.9rem] leading-relaxed">
-        Room for the next one. Add it in <span className="font-mono text-[0.8rem]">lib/data.ts</span>.
-      </p>
-    </div>
+    </motion.div>
   );
 }
