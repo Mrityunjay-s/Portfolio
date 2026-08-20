@@ -200,6 +200,34 @@
   animation-play-state: paused;
 }
 
+/* Work section's architecture-diagram connectors. A dot travels left to
+   right along the dashed line between two nodes, looping — direction reads
+   as motion (data flowing downstream) rather than a static arrow glyph
+   having to carry the whole idea on its own. Fades in/out at both ends so it
+   doesn't pop in or out mid-line. */
+@keyframes flow-dot {
+  0% {
+    left: -6%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    left: 106%;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-dot {
+    display: none;
+  }
+}
+
 @keyframes scroll-hint {
   0%,
   100% {
