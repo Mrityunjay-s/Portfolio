@@ -4,31 +4,6 @@ import { motion } from "framer-motion";
 
 type Node = readonly [label: string, hot: boolean];
 
-/**
- * The connector between two architecture nodes: a dashed line with a small
- * accent dot looping left to right along it, so the diagram reads as data
- * flowing downstream rather than a static wiring diagram. `delay` is set per
- * connector by the caller so a whole diagram's dots don't all pulse in
- * lockstep — see hero-meteors.tsx for the same staggering idea applied to a
- * different animation.
- *
- * The dashed line and the small trailing arrowhead are the fallback: under
- * prefers-reduced-motion the dot is hidden entirely (globals.css), and
- * direction still reads from the static line + arrowhead alone.
- */
-function FlowConnector({ delay }: { delay: number }) {
-  return (
-    <span className="relative flex h-3 w-6 shrink-0 items-center" aria-hidden="true">
-      <span className="w-full border-t border-dashed border-line" />
-      <span className="absolute right-0 text-[0.55rem] leading-none text-dim">&#8250;</span>
-      <span
-        className="flow-dot absolute top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-accent shadow-[0_0_4px_rgba(var(--accent-rgb),0.9)]"
-        style={{ animation: `flow-dot 1.8s ease-in-out ${delay}s infinite` }}
-      />
-    </span>
-  );
-}
-
 export type ProjectProps = {
   hash: string;
   when: string;
@@ -109,7 +84,11 @@ export default function Project({
               >
                 {label}
               </span>
-              {i < nodes.length - 1 && <FlowConnector delay={(index * 0.6 + i * 0.35) % 1.8} />}
+              {i < nodes.length - 1 && (
+                <span className="mx-1 shrink-0 text-[0.7rem] text-dim" aria-hidden="true">
+                  &rarr;
+                </span>
+              )}
             </span>
           ))}
         </div>
