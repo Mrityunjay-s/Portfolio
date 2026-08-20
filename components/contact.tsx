@@ -29,8 +29,8 @@ export default function Contact() {
         <div className="rounded-2xl border border-line bg-surface p-6 sm:p-8 lg:col-span-2">
           <SectionHeading eyebrow="04 / Contact">Let&apos;s build something</SectionHeading>
           <p className="text-[0.94rem] leading-relaxed text-muted">
-            Open to mobile roles and freelance builds. Tell me what you&apos;re making and I&apos;ll
-            reply within a day.
+            Open to full stack roles and freelance builds. Tell me what you&apos;re making and
+            I&apos;ll reply within a day.
           </p>
           <a
             href={`mailto:${EMAIL}`}
@@ -63,7 +63,7 @@ export default function Contact() {
             required
             maxLength={500}
             placeholder="you@company.com"
-            className="rounded-lg border border-line bg-surface-2 px-4 py-3 text-sm text-text outline-hidden transition placeholder:text-dim focus:border-accent/50"
+            className="rounded-lg border border-line bg-surface-2 px-4 py-3 text-sm text-text transition placeholder:text-dim focus:border-accent/50"
           />
 
           <label className="label-mono mt-2 text-dim" htmlFor="message">
@@ -76,7 +76,7 @@ export default function Contact() {
             maxLength={5000}
             rows={6}
             placeholder="What are you building?"
-            className="resize-none rounded-lg border border-line bg-surface-2 px-4 py-3 text-sm text-text outline-hidden transition placeholder:text-dim focus:border-accent/50"
+            className="resize-none rounded-lg border border-line bg-surface-2 px-4 py-3 text-sm text-text transition placeholder:text-dim focus:border-accent/50"
           />
 
           <div className="mt-2">
