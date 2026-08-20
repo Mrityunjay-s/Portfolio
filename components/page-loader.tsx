@@ -164,6 +164,13 @@ export default function PageLoader({ visible, progress, onExitComplete }: PageLo
               %
             </span>
           </div>
+
+          <div className="absolute inset-x-0 bottom-0 z-10 h-0.5 rounded-2xl bg-text/10">
+            <div
+              className="h-full bg-white"
+              style={{ width: `${display}%` }}
+            />
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

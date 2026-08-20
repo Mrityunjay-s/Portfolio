@@ -71,9 +71,9 @@ export default function Project({
             (Client -> Services -> Kafka is the actual shape of what was
             built), which is the whole reason to draw it instead of pasting
             in a UI screenshot that doesn't exist for a backend system anyway. */}
-        <div className="mt-3 flex items-center overflow-x-auto pb-1">
+        <div className="mt-3 flex flex-wrap items-center gap-y-1.5">
           {nodes.map(([label, hot], i) => (
-            <span key={label} className="flex shrink-0 items-center">
+            <span key={label} className="flex items-center">
               <span
                 className={
                   "rounded-md border px-2 py-1 font-mono text-[0.62rem] whitespace-nowrap " +
