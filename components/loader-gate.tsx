@@ -8,9 +8,14 @@ import { useActiveSectionContext } from "@/context/active-section-context";
 import { hashSection } from "@/lib/data";
 import type { SectionName } from "@/lib/types";
 
+// HomeShell's zoom (home-shell.tsx) runs 1.4s. markSettled fires a little
+// after that so the last of the transform's geometry has genuinely settled
+// before observers are unpaused, not just "should be about done by now."
+const ZOOM_SETTLE_MS = 1600;
+
 export default function LoaderGate() {
   const pathname = usePathname();
-  const { startLoading, completeLoading } = useLoaderContext();
+  const { startLoading, completeLoading, markSettled } = useLoaderContext();
   const { setActiveSection, setTimeOfLastClick } = useActiveSectionContext();
   const [showLoader, setShowLoader] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -21,13 +26,35 @@ export default function LoaderGate() {
   // torn down and restarted mid-count, which would stall the loader
   // indefinitely.
   const completeRef = useRef(completeLoading);
+  const markSettledRef = useRef(markSettled);
   const setActiveSectionRef = useRef(setActiveSection);
   const setTimeOfLastClickRef = useRef(setTimeOfLastClick);
   useEffect(() => {
     completeRef.current = completeLoading;
+    markSettledRef.current = markSettled;
     setActiveSectionRef.current = setActiveSection;
     setTimeOfLastClickRef.current = setTimeOfLastClick;
-  }, [completeLoading, setActiveSection, setTimeOfLastClick]);
+  }, [completeLoading, markSettled, setActiveSection, setTimeOfLastClick]);
+
+  // Captured in a layout effect — React runs every layout effect in the tree
+  // before any passive effect fires, and useSectionInView's observer (the
+  // thing that can rewrite the hash) is a plain useEffect, so this always
+  // wins the race regardless of component order. (Reading it during render
+  // instead would be earlier still, but refs can't be touched during render.)
+  //
+  // That ordering is what makes this worth capturing at all: re-reading
+  // window.location.hash live inside `end()` was the actual bug in the first
+  // version of this fix. If a section's observer fires spuriously during the
+  // loader's zoom, it calls history.replaceState on its own, silently
+  // rewriting the hash to whatever it fired on — so reading the hash "at
+  // completion time" doesn't recover the user's real intent, it can just as
+  // easily read back the exact corruption this code exists to correct.
+  const initialHashRef = useRef<string | null>(null);
+  useLayoutEffect(() => {
+    if (initialHashRef.current === null) {
+      initialHashRef.current = window.location.hash;
+    }
+  }, []);
 
   useLayoutEffect(() => {
     if (!isHome) {
@@ -94,16 +121,38 @@ export default function LoaderGate() {
       // observer has no idea the loader exists, so it fires and stomps the
       // nav straight onto "About" before the zoom has even finished.
       //
-      // Fixed two ways: authoritatively set the section the hand-off should
-      // actually land on right now (whatever hash the URL already carries,
-      // so a deep link to /#about on a first visit is still respected —
-      // defaulting to Home only when there isn't one), and reset the click
-      // suppression clock so the observers' spurious firings for the rest of
-      // the zoom are ignored the same way a real nav click would be.
-      const hash = window.location.hash;
-      const landingSection = (hashSection[hash] as SectionName | undefined) ?? "Home";
+      // Two parts. First, authoritatively set the section the hand-off
+      // should actually land on, from the hash captured at mount (see
+      // initialHashRef above for why that one and not a live read) — so a
+      // genuine deep link to /#about on a first visit is still respected,
+      // defaulting to Home only when there wasn't one.
+      const hash = initialHashRef.current;
+      // Ternary, not `hash && ...`: when hash is "" (falsy), `&&` evaluates
+      // to "" itself rather than undefined, and "" isn't a SectionName — the
+      // `??` below only catches null/undefined, so an empty string would
+      // slip through as an invalid value instead of falling back to Home.
+      const landingSection: SectionName =
+        (hash ? (hashSection[hash] as SectionName | undefined) : undefined) ?? "Home";
       setActiveSectionRef.current(landingSection);
       setTimeOfLastClickRef.current(Date.now());
+      if (window.location.hash !== hash) {
+        window.history.replaceState(null, "", hash || window.location.pathname + window.location.search);
+      }
+
+      // Second — the part that actually closes the race rather than just
+      // outrunning it: every useSectionInView observer stays paused
+      // (`skip`, via LoaderContext's isSettled) until this fires, so no
+      // section can report inView at all while the zoom's geometry is still
+      // moving. An earlier version of this fix instead reset the click-
+      // suppression clock above and hoped 1.5s was enough — it wasn't. If a
+      // React effect's actual execution gets delayed (a busy tab, a slow
+      // device, exactly the kind of moment an entrance animation is
+      // competing for the main thread), "was it less than N ms ago" can
+      // already be false by the time the check finally runs, and the same
+      // stale-observer write comes right back. Pausing the observers
+      // outright has no such window: whenever their effects do get around to
+      // running, skip is still true until markSettled genuinely fires.
+      setTimeout(markSettledRef.current, ZOOM_SETTLE_MS);
 
       // Released as the panel *starts* moving, not when it lands, so the page
       // underneath travels at the same time. Releasing on exit-complete would

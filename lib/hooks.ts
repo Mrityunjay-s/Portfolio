@@ -1,17 +1,29 @@
 import { useActiveSectionContext } from "@/context/active-section-context";
+import { useLoaderContext } from "@/context/loader-context";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { sectionHash } from "./data";
 import type { SectionName } from "./types";
 
-// Longer than a click needs (a real nav click only has to outlast the smooth
-// scroll it triggers), because the loader hand-off also resets this clock
-// and needs to outlast HomeShell's 1.4s zoom — see loader-gate.tsx's `end`.
+// Covers a real nav click's smooth-scroll window. Deliberately not what
+// guards against the loader hand-off race any more — see isSettled below for
+// why a duration-based check can't be trusted for that one.
 const OBSERVER_SUPPRESSION_MS = 1500;
 
 export function useSectionInView(sectionName: SectionName, threshold = 0.75) {
+  // While the loader's post-reveal zoom is still moving (home-shell.tsx),
+  // every section is visually compressed toward the top of the page, so one
+  // that would normally sit off-screen can satisfy this very observer's
+  // threshold from the transform alone — no scrolling involved. `skip`
+  // pauses observation outright rather than just filtering what to do with
+  // the result: a timestamp check ("was the reveal less than N ms ago") can
+  // be defeated by any effect-scheduling delay, which an entrance animation
+  // competing for the main thread is exactly the moment likely to cause.
+  // See loader-gate.tsx's `end` for where isSettled flips back on.
+  const { isSettled } = useLoaderContext();
   const { ref, inView } = useInView({
     threshold,
+    skip: !isSettled,
   });
   const { setActiveSection, timeOfLastClick } = useActiveSectionContext();
 
