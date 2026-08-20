@@ -36,6 +36,13 @@ export const sectionHash: Record<string, string> = Object.fromEntries(
   links.map((l) => [l.name, l.hash])
 );
 
+// The other direction — recovering a SectionName from a hash the URL already
+// carries (a deep link to /#about, or the loader hand-off correcting itself
+// against whatever hash is currently live).
+export const hashSection: Record<string, string> = Object.fromEntries(
+  links.map((l) => [l.hash, l.name])
+);
+
 // export const experiencesData = [
 //   {
 //     title: "Diploma Degree",

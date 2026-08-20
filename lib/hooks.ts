@@ -4,6 +4,11 @@ import { useInView } from "react-intersection-observer";
 import { sectionHash } from "./data";
 import type { SectionName } from "./types";
 
+// Longer than a click needs (a real nav click only has to outlast the smooth
+// scroll it triggers), because the loader hand-off also resets this clock
+// and needs to outlast HomeShell's 1.4s zoom — see loader-gate.tsx's `end`.
+const OBSERVER_SUPPRESSION_MS = 1500;
+
 export function useSectionInView(sectionName: SectionName, threshold = 0.75) {
   const { ref, inView } = useInView({
     threshold,
@@ -11,7 +16,7 @@ export function useSectionInView(sectionName: SectionName, threshold = 0.75) {
   const { setActiveSection, timeOfLastClick } = useActiveSectionContext();
 
   useEffect(() => {
-    if (inView && Date.now() - timeOfLastClick > 1000) {
+    if (inView && Date.now() - timeOfLastClick > OBSERVER_SUPPRESSION_MS) {
       setActiveSection(sectionName);
       // Keeps the address bar in step with whatever the nav is highlighting.
       // replaceState rather than pushState: this fires on every section the
